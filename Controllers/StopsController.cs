@@ -36,6 +36,7 @@ namespace TransitFeeds.Controllers
 
             var stop = await _context.Stops
                 .Include(s => s.ParentStation)
+                .Include(s => s.StopTimes)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (stop == null)
             {

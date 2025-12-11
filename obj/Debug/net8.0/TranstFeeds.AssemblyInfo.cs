@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TranstFeeds")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ca8290e6706e4f6e562b5fca58d85c845874b434")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4690a14ab099fbc7cf8d50a6c14f21a4f25d578d")]
 [assembly: System.Reflection.AssemblyProductAttribute("TranstFeeds")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TranstFeeds")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

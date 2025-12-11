@@ -2,62 +2,122 @@
 
 @{
     ViewData["Title"] = "Route Details";
+    
+    // Prepare chart data: Trips by Direction
+    var tripsByDirection = Model.Trips.GroupBy(t => t.DirectionId)
+        .Select(g => new { Direction = g.Key, Count = g.Count() })
+        .OrderBy(x => x.Direction)
+        .ToList();
+
+    var labels = System.Text.Json.JsonSerializer.Serialize(tripsByDirection.Select(x => x.Direction == (byte)0 ? "Outbound" : "Inbound"));
+    var data = System.Text.Json.JsonSerializer.Serialize(tripsByDirection.Select(x => x.Count));
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+             <div class="h-16 w-16 rounded-2xl flex items-center justify-center text-xl font-bold shadow-soft" 
+                  style="background-color: #@Model.RouteColor; color: #@Model.RouteTextColor;">
+                @Model.RouteShortName
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">@Model.RouteLongName</h1>
+                <p class="text-gray-500 mt-1">Operated by @Model.Agency?.AgencyName</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                Back to List
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
+                Edit Route
+            </a>
+        </div>
     </div>
-    <div class="header-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
-</div>
 
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">GTFS ID</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsRouteId)</dd>
-
-                <dt class="col-sm-3">Agency</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.Agency.AgencyName)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteShortName)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.RouteShortName)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteLongName)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.RouteLongName)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteType)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.RouteType)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteTextColor)</dt>
-                <dd class="col-sm-9">
-                    <span style="background-color: #@Model.RouteTextColor; padding: 2px 5px; border: 1px solid #ccc;">
-                        #@Model.RouteTextColor
-                    </span>
-                </dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteColor)</dt>
-                <dd class="col-sm-9">
-                    <span style="background-color: #@Model.RouteColor; padding: 2px 5px; border: 1px solid #ccc; color: white;">
-                        #@Model.RouteColor
-                    </span>
-                </dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteUrl)</dt>
-                <dd class="col-sm-9">
-                    @if (!string.IsNullOrEmpty(Model.RouteUrl))
-                    {
-                        <a href="@Model.RouteUrl" target="_blank">@Model.RouteUrl</a>
-                    }
-                </dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteDesc)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.RouteDesc)</dd>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Details Card -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Route Information</h2>
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 mb-1">GTFS ID</dt>
+                    <dd class="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg font-mono text-sm">@Model.GtfsRouteId</dd>
+                </div>
+                <div>
+                     <dt class="text-sm font-medium text-gray-500 mb-1">Type</dt>
+                    <dd class="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
+                        @if(Model.RouteType.HasValue && Model.RouteType.Value == 3) { <span><i class="fas fa-bus mr-2 text-gray-400"></i>Bus</span> }
+                        else if(Model.RouteType.HasValue && Model.RouteType.Value == 1) { <span><i class="fas fa-subway mr-2 text-gray-400"></i>Subway</span> }
+                        else { <span>@Model.RouteType</span> }
+                    </dd>
+                </div>
+                <div class="md:col-span-2">
+                    <dt class="text-sm font-medium text-gray-500 mb-1">Description</dt>
+                    <dd class="text-base text-gray-700">@Model.RouteDesc</dd>
+                </div>
+                <div class="md:col-span-2">
+                    <dt class="text-sm font-medium text-gray-500 mb-1">More Info</dt>
+                    <dd class="text-base text-blue-600 hover:underline">
+                         @if (!string.IsNullOrEmpty(Model.RouteUrl))
+                        {
+                            <a href="@Model.RouteUrl" target="_blank">@Model.RouteUrl</a>
+                        }
+                        else
+                        {
+                            <span class="text-gray-400">No URL provided</span>
+                        }
+                    </dd>
+                </div>
             </dl>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="bg-white rounded-2xl shadow-soft p-6 border border-gray-100 flex flex-col">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Trip Frequency</h2>
+            <div class="relative h-64 w-full">
+                <canvas id="routeChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 text-center">Number of scheduled trips per direction.</p>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('routeChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(labels),
+                datasets: [{
+                    label: 'Trips',
+                    data: @Html.Raw(data),
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.8)',
+                        'rgba(99, 102, 241, 0.8)'
+                    ],
+                    borderRadius: 8,
+                    barThickness: 40
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal bar
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+}

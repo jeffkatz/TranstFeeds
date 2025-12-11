@@ -1,110 +1,116 @@
 @{
-    ViewData["Title"] = "Data Management";
+    ViewData["Title"] = "Import / Export";
 }
 
-<div class="container mx-auto hybrid-section">
-    <!-- Header -->
-    <div class="mb-10 text-center">
-        <h2 class="text-3xl font-bold text-gray-800 tracking-tight">Data Management</h2>
-        <p class="text-gray-500 mt-2">Import and export your GTFS data with ease</p>
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col items-center justify-center mb-12 text-center">
+        <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight">Data Management</h2>
+        <p class="text-gray-500 mt-3 max-w-xl">
+            Manage your transit data. Import complete GTFS feeds via ZIP or export your current database to a standard GTFS package.
+        </p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        <!-- Import Section -->
-        <div class="space-y-8">
-            <h3 class="text-xl font-semibold text-gray-700 border-b pb-2">Import Data</h3>
-
-            <!-- Stops Upload -->
-            <div class="hybrid-card group hover:shadow-lg transition-all duration-300">
-                <div class="flex justify-between items-center mb-4">
-                    <h4 class="text-lg font-medium text-gray-800 group-hover:text-indigo-600 transition-colors">Stops</h4>
-                    <span class="text-xs font-mono bg-gray-100 text-gray-500 px-2 py-1 rounded">stops.txt</span>
+    @if (TempData["Success"] != null)
+    {
+        <div class="max-w-4xl mx-auto mb-8 bg-green-50 border-l-4 border-green-500 p-4 rounded-r shadow-sm">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-500"></i>
                 </div>
-                <form asp-controller="Import" asp-action="UploadStops" method="post" enctype="multipart/form-data" class="space-y-4">
-                    <input type="file" name="file" accept=".txt,.csv" class="hybrid-input text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" required />
-                    <button type="submit" class="w-full py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 shadow-sm hover:shadow-md transition-all flex justify-center items-center">
-                        <i class="fas fa-cloud-upload-alt mr-2"></i> Import Stops
-                    </button>
-                </form>
-            </div>
-
-            <!-- Routes Upload -->
-            <div class="hybrid-card group hover:shadow-lg transition-all duration-300">
-                <div class="flex justify-between items-center mb-4">
-                    <h4 class="text-lg font-medium text-gray-800 group-hover:text-green-600 transition-colors">Routes</h4>
-                    <span class="text-xs font-mono bg-gray-100 text-gray-500 px-2 py-1 rounded">routes.txt</span>
+                <div class="ml-3">
+                    <p class="text-sm text-green-700">@TempData["Success"]</p>
                 </div>
-                <form asp-controller="Import" asp-action="UploadRoutes" method="post" enctype="multipart/form-data" class="space-y-4">
-                    <input type="file" name="file" accept=".txt,.csv" class="hybrid-input text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100" required />
-                    <button type="submit" class="w-full py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 shadow-sm hover:shadow-md transition-all flex justify-center items-center">
-                        <i class="fas fa-cloud-upload-alt mr-2"></i> Import Routes
-                    </button>
-                </form>
-            </div>
-
-            <!-- Trips Upload -->
-            <div class="hybrid-card group hover:shadow-lg transition-all duration-300">
-                <div class="flex justify-between items-center mb-4">
-                    <h4 class="text-lg font-medium text-gray-800 group-hover:text-teal-600 transition-colors">Trips</h4>
-                    <span class="text-xs font-mono bg-gray-100 text-gray-500 px-2 py-1 rounded">trips.txt</span>
-                </div>
-                <form asp-controller="Import" asp-action="UploadTrips" method="post" enctype="multipart/form-data" class="space-y-4">
-                    <input type="file" name="file" accept=".txt,.csv" class="hybrid-input text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100" required />
-                    <button type="submit" class="w-full py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 shadow-sm hover:shadow-md transition-all flex justify-center items-center">
-                        <i class="fas fa-cloud-upload-alt mr-2"></i> Import Trips
-                    </button>
-                </form>
             </div>
         </div>
+    }
 
-        <!-- Export Section -->
-        <div class="space-y-8">
-            <h3 class="text-xl font-semibold text-gray-700 border-b pb-2">Export Data</h3>
-
-            <div class="hybrid-card bg-gradient-to-br from-white to-gray-50">
-                <p class="text-gray-600 mb-6">Download your current dataset in standard GTFS format.</p>
-                
-                <div class="space-y-4">
-                    <a asp-action="ExportStops" class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-indigo-300 hover:shadow-md transition-all group">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 mr-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-map-marker-alt"></i>
-                            </div>
-                            <div>
-                                <h5 class="font-medium text-gray-900">Stops</h5>
-                                <p class="text-xs text-gray-500">stops.txt</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-download text-gray-400 group-hover:text-indigo-600"></i>
-                    </a>
-
-                    <a asp-action="ExportRoutes" class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-green-300 hover:shadow-md transition-all group">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-4 group-hover:bg-green-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-route"></i>
-                            </div>
-                            <div>
-                                <h5 class="font-medium text-gray-900">Routes</h5>
-                                <p class="text-xs text-gray-500">routes.txt</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-download text-gray-400 group-hover:text-green-600"></i>
-                    </a>
-
-                    <a asp-action="ExportTrips" class="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-teal-300 hover:shadow-md transition-all group">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 mr-4 group-hover:bg-teal-600 group-hover:text-white transition-colors">
-                                <i class="fas fa-bus"></i>
-                            </div>
-                            <div>
-                                <h5 class="font-medium text-gray-900">Trips</h5>
-                                <p class="text-xs text-gray-500">trips.txt</p>
-                            </div>
-                        </div>
-                        <i class="fas fa-download text-gray-400 group-hover:text-teal-600"></i>
-                    </a>
+    @if (TempData["Error"] != null)
+    {
+        <div class="max-w-4xl mx-auto mb-8 bg-red-50 border-l-4 border-red-500 p-4 rounded-r shadow-sm">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-500"></i>
                 </div>
+                <div class="ml-3">
+                    <p class="text-sm text-red-700">@TempData["Error"]</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        <!-- Import Card -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col items-center text-center p-8 transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl mb-6">
+                <i class="fas fa-file-import"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Import GTFS Feed</h3>
+            <p class="text-gray-500 mb-8 text-sm">
+                Upload a standard .zip file containing your GTFS text files (agency.txt, stops.txt, etc).
+                <br/><span class="text-xs text-orange-500"><i class="fas fa-exclamation-triangle"></i> Starts a fresh import process.</span>
+            </p>
+
+            <form asp-controller="Import" asp-action="UploadZip" method="post" enctype="multipart/form-data" class="w-full max-w-sm space-y-4">
+                <div class="relative group">
+                    <input type="file" name="file" accept=".zip" class="block w-full text-sm text-gray-500
+                        file:mr-4 file:py-2.5 file:px-4
+                        file:rounded-full file:border-0
+                        file:text-sm file:font-semibold
+                        file:bg-indigo-50 file:text-indigo-700
+                        hover:file:bg-indigo-100 cursor-pointer" required />
+                </div>
+                
+                <button type="submit" class="w-full py-3 px-6 rounded-lg bg-indigo-600 text-white font-bold text-sm uppercase tracking-wider hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all shadow-md">
+                    <i class="fas fa-upload mr-2"></i> Upload & Process
+                </button>
+            </form>
+        </div>
+
+        <!-- Export Card -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 flex flex-col items-center text-center p-8 transition-transform hover:-translate-y-1 hover:shadow-2xl">
+            <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl mb-6">
+                <i class="fas fa-file-export"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-900 mb-2">Export GTFS Feed</h3>
+            <p class="text-gray-500 mb-8 text-sm">
+                Package your current database into a valid GTFS .zip file. 
+                <br/><span class="text-xs text-gray-400">Includes all updated routes, stops, and schedules.</span>
+            </p>
+
+            <div class="w-full max-w-sm">
+                <a asp-controller="Import" asp-action="ExportZip" class="flex items-center justify-center w-full py-3 px-6 rounded-lg bg-emerald-600 text-white font-bold text-sm uppercase tracking-wider hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all shadow-md">
+                    <i class="fas fa-download mr-2"></i> Download GTFS.zip
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Instructions / Footer -->
+    <div class="mt-16 text-center">
+        <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">Supported Files</p>
+        <div class="flex flex-wrap justify-center gap-4 mt-4 mb-16 opacity-70">
+            <span class="px-3 py-1 bg-gray-100 rounded text-xs text-gray-600">agency.txt</span>
+            <span class="px-3 py-1 bg-gray-100 rounded text-xs text-gray-600">stops.txt</span>
+            <span class="px-3 py-1 bg-gray-100 rounded text-xs text-gray-600">routes.txt</span>
+            <span class="px-3 py-1 bg-gray-100 rounded text-xs text-gray-600">trips.txt</span>
+            <span class="px-3 py-1 bg-gray-100 rounded text-xs text-gray-600">stop_times.txt</span>
+            <span class="px-3 py-1 bg-gray-100 rounded text-xs text-gray-600">calendar.txt</span>
+            <span class="px-3 py-1 bg-gray-100 rounded text-xs text-gray-600">shapes.txt</span>
+        </div>
+        
+        <!-- Danger Zone -->
+        <div class="max-w-xl mx-auto border-t border-gray-200 pt-8">
+            <h4 class="text-xs font-bold text-red-500 uppercase tracking-widest mb-4">Danger Zone</h4>
+            <div class="bg-red-50 rounded-xl p-6 border border-red-100 flex items-center justify-between">
+                <div class="text-left">
+                    <h5 class="font-bold text-red-800 text-sm">Clear Database</h5>
+                    <p class="text-xs text-red-600 mt-1">Delete all imported data including routes, stops, and schedules.</p>
+                </div>
+                <form asp-action="ClearDatabase" method="post" onsubmit="return confirm('WARNING: This will obliterate ALL data in the database. Are you absolutely sure?');">
+                    <button type="submit" class="px-4 py-2 bg-white border border-red-200 text-red-600 rounded-lg text-xs font-bold hover:bg-red-600 hover:text-white transition-all shadow-sm">
+                        <i class="fas fa-trash-alt mr-1"></i> Wipe Data
+                    </button>
+                </form>
             </div>
         </div>
     </div>

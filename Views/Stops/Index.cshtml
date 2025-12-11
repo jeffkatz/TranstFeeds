@@ -4,104 +4,141 @@
     ViewData["Title"] = "Stops";
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
+<div class="container mx-auto px-4 py-8">
+    
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Stops</h1>
+            <p class="text-gray-500 mt-1">Manage transit stops and stations</p>
+        </div>
+        <div class="flex gap-2">
+             <form asp-action="DeleteInvalid" method="post" onsubmit="return confirm('Are you sure you want to delete all stops with 0,0 coordinates? This cannot be undone.');">
+                <button type="submit" class="inline-flex items-center px-4 py-2 bg-amber-500 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-600 focus:outline-none focus:ring ring-amber-300 disabled:opacity-25 transition shadow-sm">
+                    <i class="fas fa-exclamation-triangle mr-2"></i> Clean Invalid
+                </button>
+            </form>
+            <a asp-action="Create" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm">
+                <i class="fas fa-plus mr-2"></i> New Stop
+            </a>
+        </div>
     </div>
-    <div class="header-actions d-flex gap-2">
-        <form asp-action="DeleteInvalid" method="post" onsubmit="return confirm('Are you sure you want to delete all stops with 0,0 coordinates? This cannot be undone.');">
-            <button type="submit" class="btn btn-warning text-white">
-                <i class="bi bi-exclamation-triangle"></i> Delete Invalid (0,0)
-            </button>
-        </form>
-        <a asp-action="Create" class="btn btn-primary">
-            <span>+ New Stop</span>
-        </a>
-    </div>
-</div>
 
-<div class="container">
+    <!-- Alerts -->
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded-r shadow-sm flex justify-between items-center group">
+            <div class="flex">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <p class="text-green-700">@TempData["SuccessMessage"]</p>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-green-400 hover:text-green-600"><i class="fas fa-times"></i></button>
         </div>
     }
-    @if (TempData["InfoMessage"] != null)
+     @if (TempData["InfoMessage"] != null)
     {
-        <div class="alert alert-info alert-dismissible fade show" role="alert">
-            @TempData["InfoMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6 rounded-r shadow-sm flex justify-between items-center">
+             <div class="flex">
+                <i class="fas fa-info-circle text-blue-400 mt-1 mr-3"></i>
+                <p class="text-blue-700">@TempData["InfoMessage"]</p>
+            </div>
+             <button onclick="this.parentElement.remove()" class="text-blue-400 hover:text-blue-600"><i class="fas fa-times"></i></button>
         </div>
     }
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="search-container" style="flex: 1; max-width: 400px;">
-            <input type="text" id="searchInput" class="form-control search-input" placeholder="Search stops..." onkeyup="filterTable()">
+    <!-- Search & Filters -->
+    <div class="bg-white rounded-t-xl border border-gray-200 p-4 border-b-0 flex justify-between items-center gap-4 flex-wrap">
+        <div class="relative max-w-md w-full">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input type="text" id="searchInput" onkeyup="filterTable()" 
+                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out" 
+                   placeholder="Search stops by name or ID...">
         </div>
-        <div id="bulkActions" style="display: none;">
-            <button type="button" class="btn btn-danger" onclick="submitBulkDelete()">
+
+        <div id="bulkActions" class="hidden animate-fade-in">
+             <button type="button" onclick="submitBulkDelete()" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 transition shadow-sm">
                 Delete Selected (<span id="selectedCount">0</span>)
             </button>
         </div>
     </div>
 
-    <form id="bulkDeleteForm" asp-action="BulkDelete" method="post">
-        <div class="card">
-            <div class="table-responsive">
-                <table class="table" id="stopsTable">
-                    <thead>
-                        <tr>
-                            <th style="width: 40px;">
-                                <input type="checkbox" id="selectAll" class="form-check-input" onchange="toggleAll(this)">
-                            </th>
-                            <th>GTFS ID</th>
-                            <th>Code</th>
-                            <th>Name</th>
-                            <th>Lat/Lon</th>
-                            <th>Parent Station</th>
-                            <th style="text-align: right;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="ids" value="@item.Id" class="form-check-input stop-checkbox" onchange="updateBulkActionState()">
-                                </td>
-                                <td>@Html.DisplayFor(modelItem => item.GtfsStopId)</td>
-                                <td>@Html.DisplayFor(modelItem => item.StopCode)</td>
-                                <td>
-                                    <div style="font-weight: 500;">@Html.DisplayFor(modelItem => item.StopName)</div>
-                                </td>
-                                <td>
-                                    <small class="text-muted">@item.StopLat, @item.StopLon</small>
-                                </td>
-                                <td>
-                                    @if (item.ParentStation != null)
-                                    {
-                                        @Html.DisplayFor(modelItem => item.ParentStation.StopName)
-                                    }
-                                    else
-                                    {
-                                        <span class="text-muted">-</span>
-                                    }
-                                </td>
-                                <td style="text-align: right;">
-                                    <div class="btn-group">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Details</a>
-                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+    <!-- Table -->
+    <form id="bulkDeleteForm" asp-action="BulkDelete" method="post" class="bg-white shadow-sm rounded-b-xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200" id="stopsTable">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left">
+                             <input type="checkbox" id="selectAll" onclick="toggleAll(this)" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer">
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stop Details</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coordinates</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parent</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @foreach (var item in Model)
+                    {
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" name="ids" value="@item.Id" class="stop-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer" onchange="updateBulkActionState()">
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="h-8 w-8 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center mr-3 border border-blue-100">
+                                        <i class="fas fa-map-pin text-sm"></i>
                                     </div>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">@Html.DisplayFor(modelItem => item.StopName)</div>
+                                        <div class="text-xs text-gray-500 font-mono">@Html.DisplayFor(modelItem => item.GtfsStopId) @(string.IsNullOrEmpty(item.StopCode) ? "" : " / " + item.StopCode)</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-0.5 inline-flex text-xs leading-4 font-medium rounded-full bg-gray-100 text-gray-800 border border-gray-200">
+                                    @Html.DisplayFor(modelItem => item.LocationType)
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                                @item.StopLat.ToString("F5"), @item.StopLon.ToString("F5")
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @if (item.ParentStation != null) {
+                                    <span class="text-indigo-600 hover:underline">@item.ParentStation.StopName</span>
+                                } else {
+                                    <span class="text-gray-300">-</span>
+                                }
+                            </td>
+                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-info"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
+        @if (!Model.Any())
+        {
+            <div class="text-center py-10">
+                <div class="text-gray-400 mb-2 text-4xl"><i class="fas fa-map-marker-alt"></i></div>
+                <p class="text-gray-500">No stops found.</p>
+                <a asp-action="Create" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm mt-2 inline-block">Create the first stop</a>
+            </div>
+        }
     </form>
 </div>
 
@@ -111,26 +148,17 @@
             const input = document.getElementById('searchInput');
             const filter = input.value.toLowerCase();
             const table = document.getElementById('stopsTable');
-            const rows = table.getElementsByTagName('tr');
+             // Get tbody rows
+            const rows = table.querySelectorAll('tbody tr');
 
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                const cells = row.getElementsByTagName('td');
-                let found = false;
-
-                // Skip checking the first cell (checkbox)
-                for (let j = 1; j < cells.length; j++) {
-                    const cell = cells[j];
-                    if (cell) {
-                        const text = cell.textContent || cell.innerText;
-                        if (text.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
+            rows.forEach(row => {
+                const text = row.textContent || row.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
                 }
-                row.style.display = found ? '' : 'none';
-            }
+            });
         }
 
         function toggleAll(source) {
@@ -153,23 +181,21 @@
             selectedCount.innerText = count;
             
             if (count > 0) {
-                bulkActions.style.display = 'block';
+                bulkActions.classList.remove('hidden');
             } else {
-                bulkActions.style.display = 'none';
+                bulkActions.classList.add('hidden');
             }
 
             // Update select all checkbox state
             const allCheckboxes = document.getElementsByClassName('stop-checkbox');
             const selectAll = document.getElementById('selectAll');
-            if (count === allCheckboxes.length && count > 0) {
-                selectAll.checked = true;
-                selectAll.indeterminate = false;
-            } else if (count > 0) {
-                selectAll.checked = false;
+            
+            // Simple check logic
+             if (count > 0 && count < allCheckboxes.length) {
                 selectAll.indeterminate = true;
             } else {
-                selectAll.checked = false;
                 selectAll.indeterminate = false;
+                selectAll.checked = (count === allCheckboxes.length && count > 0);
             }
         }
 

@@ -41,6 +41,7 @@ namespace TransitFeeds.Controllers
                 .Include(t => t.ShapesMaster)
                 .Include(t => t.TransitCalendar)
                 .Include(t => t.TransitRoute)
+                .Include(t => t.StopTimes).ThenInclude(st => st.Stop)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (trip == null)
             {

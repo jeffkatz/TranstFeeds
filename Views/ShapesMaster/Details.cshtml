@@ -2,55 +2,152 @@
 
 @{
     ViewData["Title"] = "Shape Details";
+    
+    // Data for Shape Geometry Plot
+    var points = Model.Shapes.OrderBy(s => s.ShapePtSequence).ToList();
+    var scatterData = points.Select(p => new { x = p.ShapePtLon, y = p.ShapePtLat }).ToList();
+    var scatterJson = System.Text.Json.JsonSerializer.Serialize(scatterData);
+
+    // Calc distance
+    decimal totalDistance = points.Any() ? points.Max(p => p.ShapeDistTraveled) ?? 0 : 0;
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+             <div class="h-16 w-16 rounded-2xl flex items-center justify-center text-xl font-bold bg-purple-50 text-purple-600 shadow-soft">
+                <i class="fas fa-bezier-curve"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">@Model.GtfsShapeId</h1>
+                <p class="text-gray-500 mt-1">Shape Definition</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                Back to List
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
+                Edit Shape
+            </a>
+        </div>
     </div>
-    <div class="header-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Details Card -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Stats</h2>
+                <dl class="space-y-4">
+                    <div>
+                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Points</dt>
+                        <dd class="text-xl font-mono font-medium text-gray-900">@points.Count</dd>
+                    </div>
+                     <div>
+                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Total Distance</dt>
+                        <dd class="text-xl font-mono font-medium text-gray-900">@totalDistance.ToString("N2") <span class="text-sm text-gray-500">units</span></dd>
+                    </div>
+                     <div>
+                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Associated Trips</dt>
+                        <dd class="text-xl font-mono font-medium text-gray-900">@Model.Trips.Count</dd>
+                    </div>
+                </dl>
+            </div>
+            
+            <div class="bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+                 <h2 class="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Points Preview</h2>
+                 <div class="max-h-60 overflow-y-auto no-scrollbar">
+                     <table class="w-full text-xs">
+                         <thead>
+                             <tr class="text-gray-400 text-left">
+                                 <th class="pb-2">Seq</th>
+                                 <th class="pb-2">Lat</th>
+                                 <th class="pb-2">Lon</th>
+                             </tr>
+                         </thead>
+                         <tbody class="font-mono text-gray-600">
+                             @foreach(var p in points.Take(20))
+                             {
+                                 <tr>
+                                     <td class="py-1">@p.ShapePtSequence</td>
+                                     <td class="py-1">@Math.Round(p.ShapePtLat, 4)</td>
+                                     <td class="py-1">@Math.Round(p.ShapePtLon, 4)</td>
+                                 </tr>
+                             }
+                             @if(points.Count > 20)
+                             {
+                                 <tr>
+                                     <td colspan="3" class="text-center py-2 text-gray-400 italic">...and @(points.Count - 20) more</td>
+                                 </tr>
+                             }
+                         </tbody>
+                     </table>
+                 </div>
+            </div>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-soft p-6 border border-gray-100 flex flex-col">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Geometry Plot</h2>
+            <div class="relative h-96 w-full">
+                <!-- Scatter Chart acting as a Coordinate Map -->
+                <canvas id="shapeChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 text-center">Relative coordinate distribution (Lat/Lon).</p>
+        </div>
     </div>
 </div>
 
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">GTFS ID</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsShapeId)</dd>
-            </dl>
-        </div>
-    </div>
-
-    <!-- Related Points -->
-    <div class="card mt-4">
-        <div class="card-header">
-            <h3 class="card-title">Shape Points</h3>
-        </div>
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Sequence</th>
-                        <th>Latitude</th>
-                        <th>Longitude</th>
-                        <th>Distance</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var point in Model.Shapes.OrderBy(s => s.ShapePtSequence))
-                    {
-                        <tr>
-                            <td>@point.ShapePtSequence</td>
-                            <td>@point.ShapePtLat</td>
-                            <td>@point.ShapePtLon</td>
-                            <td>@point.ShapeDistTraveled</td>
-                        </tr>
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('shapeChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Shape Points',
+                    data: @Html.Raw(scatterJson),
+                    backgroundColor: '#9333ea', // Purple
+                    borderColor: '#9333ea',
+                    showLine: true, // Connect dots
+                    borderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5,
+                    fill: false,
+                    tension: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Longitude' },
+                        grid: { color: '#f3f4f6' },
+                        ticks: {
+                            callback: function(value) { return value.toFixed(3); } 
+                        }
+                    },
+                    y: {
+                        title: { display: true, text: 'Latitude' },
+                        grid: { color: '#f3f4f6' },
+                         ticks: {
+                            callback: function(value) { return value.toFixed(3); } 
+                        }
                     }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Lat: ${context.parsed.y}, Lon: ${context.parsed.x}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

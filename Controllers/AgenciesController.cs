@@ -34,6 +34,7 @@ namespace TransitFeeds.Controllers
             }
 
             var agency = await _context.Agencies
+                .Include(a => a.TransitRoutes)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (agency == null)
             {

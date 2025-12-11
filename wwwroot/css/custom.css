@@ -1,142 +1,55 @@
-/* wwwroot/css/custom.css */
+/* Custom Premium Styles */
+@layer components {
+    .shadow-soft {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
 
-/* ==== Typography & Base ==== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
-body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: #f9fafb;
-    /* gray-50 */
-    color: #1f2937;
-    /* gray-800 */
-    -webkit-font-smoothing: antialiased;
+    .shadow-medium {
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+    }
 }
 
-/* ==== Premium Cards (Material 3 + Apple Glass) ==== */
-.hybrid-card {
-    background-color: white;
-    border-radius: 0.75rem;
-    /* rounded-xl */
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    /* shadow-sm */
-    border: 1px solid #f3f4f6;
-    /* border-gray-100 */
-    padding: 1.5rem;
-    /* p-6 */
-    transition: all 300ms;
+/* Apple Blue */
+.text-apple-blue {
+    color: #0071e3;
 }
 
-.hybrid-card:hover {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    /* shadow-md */
-    transform: translateY(-2px);
+.bg-apple-blue {
+    background-color: #0071e3;
 }
 
-/* ==== Inputs & Forms ==== */
-.hybrid-input {
-    display: block;
-    width: 100%;
-    border-radius: 0.5rem;
-    /* rounded-lg */
-    border: 1px solid #e5e7eb;
-    /* border-gray-200 */
-    background-color: #f9fafb;
-    /* bg-gray-50 */
-    padding: 0.5rem 0.75rem;
-    transition: all 200ms;
+/* Custom Scrollbar for sidebars/tables */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
 }
 
-.hybrid-input:focus {
-    background-color: white;
-    border-color: #6366f1;
-    /* indigo-500 */
-    outline: 2px solid #c7d2fe;
-    /* ring-indigo-200 */
-    outline-offset: 2px;
+::-webkit-scrollbar-track {
+    background: transparent;
 }
 
-/* ==== Layout & Spacing ==== */
-.hybrid-section {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    max-width: 80rem;
-    /* max-w-7xl */
-    margin-left: auto;
-    margin-right: auto;
+::-webkit-scrollbar-thumb {
+    background: #d1d1d6;
+    border-radius: 3px;
 }
 
-/* ==== Sidebar Refinements ==== */
-.main-sidebar {
-    background-color: white !important;
-    border-right: 1px solid #e5e7eb !important;
-    box-shadow: none !important;
+::-webkit-scrollbar-thumb:hover {
+    background: #8e8e93;
 }
 
-.brand-link {
-    border-bottom: 1px solid #f3f4f6 !important;
+/* Animation Utilities */
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
 }
 
-.nav-sidebar .nav-link {
-    border-radius: 0.5rem;
-    margin: 0.25rem 0.5rem;
-    color: #4b5563;
-    /* text-gray-600 */
-    font-weight: 500;
-    transition: color 0.2s, background-color 0.2s;
-}
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
 
-.nav-sidebar .nav-link:hover {
-    background-color: #f9fafb;
-    /* bg-gray-50 */
-    color: #4f46e5;
-    /* text-indigo-600 */
-}
-
-.nav-sidebar .nav-link.active {
-    background-color: #eef2ff !important;
-    /* bg-indigo-50 */
-    color: #4f46e5 !important;
-    /* text-indigo-600 */
-    box-shadow: none !important;
-}
-
-.nav-icon {
-    color: #9ca3af;
-    /* text-gray-400 */
-    transition: color 0.2s;
-}
-
-.nav-link:hover .nav-icon,
-.nav-link.active .nav-icon {
-    color: #4f46e5;
-    /* text-indigo-600 */
-}
-
-/* ==== Header Refinements ==== */
-.main-header {
-    background-color: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid #e5e7eb !important;
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
-
-.content-wrapper {
-    background-color: #f9fafb !important;
-    /* bg-gray-50 */
-}
-
-/* ==== Leaflet Map Customization ==== */
-.leaflet-popup-content-wrapper {
-    border-radius: 0.75rem !important;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-    border: 1px solid #f3f4f6 !important;
-}
-
-.leaflet-popup-tip {
-    box-shadow: none !important;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -36,7 +36,7 @@ namespace TransitFeeds.Controllers
 
             var stopTime = await _context.StopTimes
                 .Include(s => s.Stop)
-                .Include(s => s.Trip)
+                .Include(s => s.Trip)!.ThenInclude(t => t.StopTimes)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (stopTime == null)
             {

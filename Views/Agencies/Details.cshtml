@@ -2,45 +2,98 @@
 
 @{
     ViewData["Title"] = "Agency Details";
+    // Prepare chart data
+    var routeTypes = Model.TransitRoutes.GroupBy(r => r.RouteType)
+        .Select(g => new { Type = g.Key, Count = g.Count() }).ToList();
+    
+    var labels = System.Text.Json.JsonSerializer.Serialize(routeTypes.Select(x => x.Type == 3 ? "Bus" : x.Type == 1 ? "Subway" : "Other"));
+    var data = System.Text.Json.JsonSerializer.Serialize(routeTypes.Select(x => x.Count));
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">@Model.AgencyName</h1>
+            <p class="text-gray-500 mt-1">@Model.GtfsAgencyId</p>
+        </div>
+        <div class="flex gap-3">
+            <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                Back to List
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
+                Edit Agency
+            </a>
+        </div>
     </div>
-    <div class="header-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
-</div>
 
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">GTFS ID</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsAgencyId)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyName)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyName)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyUrl)</dt>
-                <dd class="col-sm-9">
-                    @if (!string.IsNullOrEmpty(Model.AgencyUrl))
-                    {
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Details Card -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Information</h2>
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-6">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 mb-1">Timezone</dt>
+                    <dd class="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">@Model.AgencyTimezone</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 mb-1">Language</dt>
+                    <dd class="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">@Model.AgencyLang</dd>
+                </div>
+                <div class="md:col-span-2">
+                    <dt class="text-sm font-medium text-gray-500 mb-1">Website</dt>
+                    <dd class="text-base text-blue-600 hover:underline break-all">
                         <a href="@Model.AgencyUrl" target="_blank">@Model.AgencyUrl</a>
-                    }
-                </dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyTimezone)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyTimezone)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyPhone)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyPhone)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyLang)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyLang)</dd>
+                    </dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500 mb-1">Phone</dt>
+                    <dd class="text-base text-gray-900">@Html.DisplayFor(model => model.AgencyPhone)</dd>
+                </div>
             </dl>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="bg-white rounded-2xl shadow-soft p-6 border border-gray-100 flex flex-col items-center">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 w-full">Fleet Distribution</h2>
+            <div class="relative h-64 w-full flex justify-center">
+                <canvas id="agencyChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 text-center">Distribution of transportation modes operated by this agency.</p>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('agencyChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'polarArea',
+            data: {
+                labels: @Html.Raw(labels),
+                datasets: [{
+                    data: @Html.Raw(data),
+                    backgroundColor: [
+                        'rgba(59, 130, 246, 0.6)',  // Blue
+                        'rgba(239, 68, 68, 0.6)',   // Red
+                        'rgba(16, 185, 129, 0.6)'   // Green
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        ticks: { display: false },
+                        grid: { color: 'rgba(0,0,0,0.05)' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    </script>
+}

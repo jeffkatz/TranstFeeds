@@ -4,62 +4,94 @@
     ViewData["Title"] = "Routes";
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
-    </div>
-    <div class="header-actions">
-        <a asp-action="Create" class="btn btn-primary">
-            <span>+ New Route</span>
-        </a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="search-container" style="flex: 1; max-width: 400px;">
-            <input type="text" id="searchInput" class="form-control search-input" placeholder="Search routes..." onkeyup="filterTable()">
+<div class="container mx-auto px-4 py-8">
+    
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Routes</h1>
+            <p class="text-gray-500 mt-1">Manage and view all transit routes in the system</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm">
+                <i class="fas fa-plus mr-2"></i> New Route
+            </a>
         </div>
     </div>
 
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table" id="routesTable">
-                <thead>
+    <!-- Stats / Overview (Optional, but adds premium feel) -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center">
+            <div class="p-3 rounded-full bg-indigo-50 text-indigo-600 mr-4">
+                <i class="fas fa-route text-xl"></i>
+            </div>
+            <div>
+                <p class="text-gray-500 text-xs font-medium uppercase">Total Routes</p>
+                <p class="text-2xl font-bold text-gray-800">@Model.Count()</p>
+            </div>
+        </div>
+        <!-- More stats could go here -->
+    </div>
+
+    <!-- Search & Filter -->
+    <div class="bg-white rounded-t-xl border border-gray-200 p-4 border-b-0">
+        <div class="relative max-w-md w-full">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input type="text" id="searchInput" onkeyup="filterTable()" 
+                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out" 
+                   placeholder="Search by name, ID or agency...">
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white shadow-sm rounded-b-xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200" id="routesTable">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th>GTFS ID</th>
-                        <th>Short Name</th>
-                        <th>Long Name</th>
-                        <th>Type</th>
-                        <th>Agency</th>
-                        <th>Color</th>
-                        <th style="text-align: right;">Actions</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Route Info</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agency</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200">
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.GtfsRouteId)</td>
-                            <td>
-                                <span class="badge" style="background-color: #@(item.RouteColor ?? "999"); color: #@(item.RouteTextColor ?? "fff");">
-                                    @Html.DisplayFor(modelItem => item.RouteShortName)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg shadow-sm font-bold text-xs border border-gray-100" 
+                                         style="background-color: #@(item.RouteColor ?? "e0e7ff"); color: #@(item.RouteTextColor ?? "3730a3");">
+                                        @Html.DisplayFor(modelItem => item.RouteShortName)
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900 line-clamp-1 max-w-xs" title="@item.RouteLongName">@Html.DisplayFor(modelItem => item.RouteLongName)</div>
+                                        <div class="text-xs text-gray-500 font-mono">ID: @Html.DisplayFor(modelItem => item.GtfsRouteId)</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                    @Html.DisplayFor(modelItem => item.RouteType)
                                 </span>
                             </td>
-                            <td>@Html.DisplayFor(modelItem => item.RouteLongName)</td>
-                            <td>@Html.DisplayFor(modelItem => item.RouteType)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Agency.AgencyName)</td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(item.RouteColor))
-                                {
-                                    <div style="width: 20px; height: 20px; background-color: #@item.RouteColor; border-radius: 4px; border: 1px solid #ddd;"></div>
-                                }
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @Html.DisplayFor(modelItem => item.Agency.AgencyName)
                             </td>
-                            <td style="text-align: right;">
-                                <div class="btn-group">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Details</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-info"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -67,6 +99,14 @@
                 </tbody>
             </table>
         </div>
+        
+        @if (!Model.Any()) {
+             <div class="text-center py-10">
+                <div class="text-gray-400 mb-2 text-4xl"><i class="fas fa-bus"></i></div>
+                <p class="text-gray-500">No routes found.</p>
+                <a asp-action="Create" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm mt-2 inline-block">Create the first route</a>
+            </div>
+        }
     </div>
 </div>
 
@@ -76,25 +116,17 @@
             const input = document.getElementById('searchInput');
             const filter = input.value.toLowerCase();
             const table = document.getElementById('routesTable');
-            const rows = table.getElementsByTagName('tr');
+            // Get tbody rows
+            const rows = table.querySelectorAll('tbody tr');
 
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                const cells = row.getElementsByTagName('td');
-                let found = false;
-
-                for (let j = 0; j < cells.length; j++) {
-                    const cell = cells[j];
-                    if (cell) {
-                        const text = cell.textContent || cell.innerText;
-                        if (text.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
+            rows.forEach(row => {
+                const text = row.textContent || row.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
                 }
-                row.style.display = found ? '' : 'none';
-            }
+            });
         }
     </script>
 }

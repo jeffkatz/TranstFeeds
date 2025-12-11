@@ -4,6 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using CsvHelper;
+using CsvHelper.Configuration;
 using Microsoft.EntityFrameworkCore;
 using TransitFeeds.Data;
 using TransitFeeds.Models;
@@ -29,52 +31,60 @@ namespace TransitFeeds.Services
             var routeMap = new Dictionary<string, int>();
             var tripMap = new Dictionary<string, int>();
 
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HeaderValidated = null,
+                MissingFieldFound = null,
+                PrepareHeaderForMatch = args => args.Header.ToLower().Replace("_", "").Replace(" ", "")
+            };
+
             // 1. Agencies
-            await ImportAgencies(gtfsDirectoryPath, agencyMap);
+            await ImportAgencies(gtfsDirectoryPath, agencyMap, config);
 
             // 2. Calendars
-            await ImportCalendars(gtfsDirectoryPath, calendarMap);
+            await ImportCalendars(gtfsDirectoryPath, calendarMap, config);
 
-            // 3. Shapes (Master)
-            await ImportShapesMaster(gtfsDirectoryPath, shapeMap);
+            // 3. Shapes (Master & Points)
+            // Note: We need to populate ShapesMaster first, then the points
+            await ImportShapes(gtfsDirectoryPath, shapeMap, config);
 
             // 4. Stops
-            await ImportStops(gtfsDirectoryPath, stopMap);
+            await ImportStops(gtfsDirectoryPath, stopMap, config);
 
             // 5. Routes
-            await ImportRoutes(gtfsDirectoryPath, agencyMap, routeMap);
+            await ImportRoutes(gtfsDirectoryPath, agencyMap, routeMap, config);
 
             // 6. Trips
-            await ImportTrips(gtfsDirectoryPath, routeMap, calendarMap, shapeMap, tripMap);
+            await ImportTrips(gtfsDirectoryPath, routeMap, calendarMap, shapeMap, tripMap, config);
 
             // 7. StopTimes
-            await ImportStopTimes(gtfsDirectoryPath, tripMap, stopMap);
-
-            // 8. Shape Points
-            await ImportShapePoints(gtfsDirectoryPath, shapeMap);
+            await ImportStopTimes(gtfsDirectoryPath, tripMap, stopMap, config);
         }
 
-        private async Task ImportAgencies(string path, Dictionary<string, int> map)
+        private async Task ImportAgencies(string path, Dictionary<string, int> map, CsvConfiguration config)
         {
             var file = Path.Combine(path, "agency.txt");
             if (!File.Exists(file)) return;
 
             using var reader = new StreamReader(file);
-            var headers = GetHeaders(reader);
+            using var csv = new CsvReader(reader, config);
 
-            while (!reader.EndOfStream)
+            // Read as dynamic to handle flexible columns manually or map to a DTO
+            var records = csv.GetRecords<dynamic>();
+
+            foreach (var r in records)
             {
-                var line = await reader.ReadLineAsync();
-                var values = ParseCsvLine(line);
+                var dict = (IDictionary<string, object>)r;
+                var gtfsId = GetValue(dict, "agency_id"); // May be null if only 1 agency
                 
                 var agency = new Agency
                 {
-                    GtfsAgencyId = GetValue(headers, values, "agency_id"),
-                    AgencyName = GetValue(headers, values, "agency_name") ?? "Unknown",
-                    AgencyUrl = GetValue(headers, values, "agency_url") ?? "",
-                    AgencyTimezone = GetValue(headers, values, "agency_timezone") ?? "",
-                    AgencyPhone = GetValue(headers, values, "agency_phone"),
-                    AgencyLang = GetValue(headers, values, "agency_lang")
+                    GtfsAgencyId = gtfsId,
+                    AgencyName = GetValue(dict, "agency_name") ?? "Unknown",
+                    AgencyUrl = GetValue(dict, "agency_url") ?? "",
+                    AgencyTimezone = GetValue(dict, "agency_timezone") ?? "",
+                    AgencyPhone = GetValue(dict, "agency_phone"),
+                    AgencyLang = GetValue(dict, "agency_lang")
                 };
 
                 _context.Agencies.Add(agency);
@@ -84,37 +94,42 @@ namespace TransitFeeds.Services
                 {
                     map[agency.GtfsAgencyId] = agency.Id;
                 }
+                else
+                {
+                    // Fallback for single agency feeds without ID
+                    if (!map.ContainsKey("DEFAULT")) map["DEFAULT"] = agency.Id;
+                }
             }
         }
 
-        private async Task ImportCalendars(string path, Dictionary<string, int> map)
+        private async Task ImportCalendars(string path, Dictionary<string, int> map, CsvConfiguration config)
         {
             var file = Path.Combine(path, "calendar.txt");
             if (!File.Exists(file)) return;
 
             using var reader = new StreamReader(file);
-            var headers = GetHeaders(reader);
+            using var csv = new CsvReader(reader, config);
 
-            while (!reader.EndOfStream)
+            var records = csv.GetRecords<dynamic>();
+
+            foreach (var r in records)
             {
-                var line = await reader.ReadLineAsync();
-                var values = ParseCsvLine(line);
-
-                var serviceId = GetValue(headers, values, "service_id");
+                var dict = (IDictionary<string, object>)r;
+                var serviceId = GetValue(dict, "service_id");
                 if (string.IsNullOrEmpty(serviceId)) continue;
 
                 var cal = new TransitCalendar
                 {
                     GtfsServiceId = serviceId,
-                    StartDate = ParseDate(GetValue(headers, values, "start_date")),
-                    EndDate = ParseDate(GetValue(headers, values, "end_date")),
-                    Monday = GetValue(headers, values, "monday") == "1",
-                    Tuesday = GetValue(headers, values, "tuesday") == "1",
-                    Wednesday = GetValue(headers, values, "wednesday") == "1",
-                    Thursday = GetValue(headers, values, "thursday") == "1",
-                    Friday = GetValue(headers, values, "friday") == "1",
-                    Saturday = GetValue(headers, values, "saturday") == "1",
-                    Sunday = GetValue(headers, values, "sunday") == "1"
+                    StartDate = ParseDate(GetValue(dict, "start_date")),
+                    EndDate = ParseDate(GetValue(dict, "end_date")),
+                    Monday = GetValue(dict, "monday") == "1",
+                    Tuesday = GetValue(dict, "tuesday") == "1",
+                    Wednesday = GetValue(dict, "wednesday") == "1",
+                    Thursday = GetValue(dict, "thursday") == "1",
+                    Friday = GetValue(dict, "friday") == "1",
+                    Saturday = GetValue(dict, "saturday") == "1",
+                    Sunday = GetValue(dict, "sunday") == "1"
                 };
 
                 _context.TransitCalendars.Add(cal);
@@ -123,22 +138,26 @@ namespace TransitFeeds.Services
             }
         }
 
-        private async Task ImportShapesMaster(string path, Dictionary<string, int> map)
+        private async Task ImportShapes(string path, Dictionary<string, int> map, CsvConfiguration config)
         {
             var file = Path.Combine(path, "shapes.txt");
             if (!File.Exists(file)) return;
 
-            // Shapes file contains points, we need distinct shape_ids first
+            // We need to read the file twice or stream carefully:
+            // 1. To get distinct shape_ids and create Master records
+            // 2. To add the points
+
+            // Pass 1: Master Records
             var distinctShapeIds = new HashSet<string>();
             using (var reader = new StreamReader(file))
+            using (var csv = new CsvReader(reader, config))
             {
-                var headers = GetHeaders(reader);
-                while (!reader.EndOfStream)
+                var records = csv.GetRecords<dynamic>();
+                foreach (var r in records)
                 {
-                    var line = await reader.ReadLineAsync();
-                    var values = ParseCsvLine(line);
-                    var shapeId = GetValue(headers, values, "shape_id");
-                    if (!string.IsNullOrEmpty(shapeId)) distinctShapeIds.Add(shapeId);
+                    var dict = (IDictionary<string, object>)r;
+                    var sid = GetValue(dict, "shape_id");
+                    if (!string.IsNullOrEmpty(sid)) distinctShapeIds.Add(sid);
                 }
             }
 
@@ -149,46 +168,89 @@ namespace TransitFeeds.Services
                 await _context.SaveChangesAsync();
                 map[shapeId] = master.Id;
             }
+
+            // Pass 2: Points
+            using (var reader = new StreamReader(file))
+            using (var csv = new CsvReader(reader, config))
+            {
+                var records = csv.GetRecords<dynamic>();
+                var batch = new List<Shape>();
+                int count = 0;
+
+                foreach (var r in records)
+                {
+                    var dict = (IDictionary<string, object>)r;
+                    var sid = GetValue(dict, "shape_id");
+                    
+                    if (string.IsNullOrEmpty(sid) || !map.ContainsKey(sid)) continue;
+
+                    var shape = new Shape
+                    {
+                        ShapeId = map[sid],
+                        ShapePtSequence = ParseInt(GetValue(dict, "shape_pt_sequence")) ?? 0,
+                        ShapePtLat = ParseDecimal(GetValue(dict, "shape_pt_lat")),
+                        ShapePtLon = ParseDecimal(GetValue(dict, "shape_pt_lon")),
+                        ShapeDistTraveled = ParseDecimal(GetValue(dict, "shape_dist_traveled"))
+                    };
+
+                    batch.Add(shape);
+                    count++;
+
+                    if (count >= 1000)
+                    {
+                        _context.Shapes.AddRange(batch);
+                        await _context.SaveChangesAsync();
+                        _context.ChangeTracker.Clear();
+                        batch.Clear();
+                        count = 0;
+                    }
+                }
+                if (batch.Any())
+                {
+                    _context.Shapes.AddRange(batch);
+                    await _context.SaveChangesAsync();
+                    _context.ChangeTracker.Clear();
+                }
+            }
         }
 
-        private async Task ImportStops(string path, Dictionary<string, int> map)
+        private async Task ImportStops(string path, Dictionary<string, int> map, CsvConfiguration config)
         {
             var file = Path.Combine(path, "stops.txt");
             if (!File.Exists(file)) return;
 
-            // Pass 1: Create Stops
             var stopsToUpdateParent = new List<(int InternalId, string ParentGtfsId)>();
 
             using (var reader = new StreamReader(file))
+            using (var csv = new CsvReader(reader, config))
             {
-                var headers = GetHeaders(reader);
-                while (!reader.EndOfStream)
+                var records = csv.GetRecords<dynamic>();
+                foreach (var r in records)
                 {
-                    var line = await reader.ReadLineAsync();
-                    var values = ParseCsvLine(line);
-                    var gtfsId = GetValue(headers, values, "stop_id");
+                    var dict = (IDictionary<string, object>)r;
+                    var gtfsId = GetValue(dict, "stop_id");
                     if (string.IsNullOrEmpty(gtfsId)) continue;
 
                     var stop = new Stop
                     {
                         GtfsStopId = gtfsId,
-                        StopCode = GetValue(headers, values, "stop_code"),
-                        StopName = GetValue(headers, values, "stop_name") ?? "Unknown",
-                        StopDesc = GetValue(headers, values, "stop_desc"),
-                        StopLat = ParseDecimal(GetValue(headers, values, "stop_lat")),
-                        StopLon = ParseDecimal(GetValue(headers, values, "stop_lon")),
-                        ZoneId = GetValue(headers, values, "zone_id"),
-                        StopUrl = GetValue(headers, values, "stop_url"),
-                        LocationType = ParseByte(GetValue(headers, values, "location_type")),
-                        WheelchairBoarding = ParseByte(GetValue(headers, values, "wheelchair_boarding")),
-                        StopTimezone = GetValue(headers, values, "stop_timezone")
+                        StopCode = GetValue(dict, "stop_code"),
+                        StopName = GetValue(dict, "stop_name") ?? "Unknown",
+                        StopDesc = GetValue(dict, "stop_desc"),
+                        StopLat = ParseDecimal(GetValue(dict, "stop_lat")),
+                        StopLon = ParseDecimal(GetValue(dict, "stop_lon")),
+                        ZoneId = GetValue(dict, "zone_id"),
+                        StopUrl = GetValue(dict, "stop_url"),
+                        LocationType = ParseByte(GetValue(dict, "location_type")),
+                        WheelchairBoarding = ParseByte(GetValue(dict, "wheelchair_boarding")),
+                        StopTimezone = GetValue(dict, "stop_timezone")
                     };
 
                     _context.Stops.Add(stop);
                     await _context.SaveChangesAsync();
                     map[gtfsId] = stop.Id;
 
-                    var parentId = GetValue(headers, values, "parent_station");
+                    var parentId = GetValue(dict, "parent_station");
                     if (!string.IsNullOrEmpty(parentId))
                     {
                         stopsToUpdateParent.Add((stop.Id, parentId));
@@ -196,58 +258,62 @@ namespace TransitFeeds.Services
                 }
             }
 
-            // Pass 2: Update Parent Stations
+            // Update Parent Stations
             foreach (var item in stopsToUpdateParent)
             {
                 if (map.TryGetValue(item.ParentGtfsId, out int parentInternalId))
                 {
-                    var stop = await _context.Stops.FindAsync(item.InternalId);
-                    if (stop != null)
-                    {
-                        stop.ParentStationId = parentInternalId;
-                    }
+                    var stop = new Stop { Id = item.InternalId, ParentStationId = parentInternalId };
+                    _context.Stops.Attach(stop);
+                    _context.Entry(stop).Property(x => x.ParentStationId).IsModified = true;
                 }
             }
             await _context.SaveChangesAsync();
+            _context.ChangeTracker.Clear();
         }
 
-        private async Task ImportRoutes(string path, Dictionary<string, int> agencyMap, Dictionary<string, int> routeMap)
+        private async Task ImportRoutes(string path, Dictionary<string, int> agencyMap, Dictionary<string, int> routeMap, CsvConfiguration config)
         {
             var file = Path.Combine(path, "routes.txt");
             if (!File.Exists(file)) return;
 
             using var reader = new StreamReader(file);
-            var headers = GetHeaders(reader);
+            using var csv = new CsvReader(reader, config);
+            var records = csv.GetRecords<dynamic>();
 
-            while (!reader.EndOfStream)
+            foreach (var r in records)
             {
-                var line = await reader.ReadLineAsync();
-                var values = ParseCsvLine(line);
-                var gtfsId = GetValue(headers, values, "route_id");
+                var dict = (IDictionary<string, object>)r;
+                var gtfsId = GetValue(dict, "route_id");
                 if (string.IsNullOrEmpty(gtfsId)) continue;
 
-                var agencyGtfsId = GetValue(headers, values, "agency_id");
+                var agencyGtfsId = GetValue(dict, "agency_id");
                 int? agencyId = null;
+
                 if (!string.IsNullOrEmpty(agencyGtfsId) && agencyMap.ContainsKey(agencyGtfsId))
                 {
                     agencyId = agencyMap[agencyGtfsId];
                 }
-                else if (agencyMap.Count == 1) // Fallback if only 1 agency exists
+                else if (agencyMap.Count == 1) // Fallback for 1 agency
                 {
                     agencyId = agencyMap.Values.First();
+                }
+                else if (agencyMap.ContainsKey("DEFAULT"))
+                {
+                    agencyId = agencyMap["DEFAULT"];
                 }
 
                 var route = new TransitRoute
                 {
                     GtfsRouteId = gtfsId,
                     AgencyId = agencyId,
-                    RouteShortName = GetValue(headers, values, "route_short_name"),
-                    RouteLongName = GetValue(headers, values, "route_long_name"),
-                    RouteType = ParseInt(GetValue(headers, values, "route_type")),
-                    RouteTextColor = GetValue(headers, values, "route_text_color"),
-                    RouteColor = GetValue(headers, values, "route_color"),
-                    RouteUrl = GetValue(headers, values, "route_url"),
-                    RouteDesc = GetValue(headers, values, "route_desc")
+                    RouteShortName = GetValue(dict, "route_short_name"),
+                    RouteLongName = GetValue(dict, "route_long_name"),
+                    RouteType = ParseInt(GetValue(dict, "route_type")),
+                    RouteTextColor = GetValue(dict, "route_text_color"),
+                    RouteColor = GetValue(dict, "route_color"),
+                    RouteUrl = GetValue(dict, "route_url"),
+                    RouteDesc = GetValue(dict, "route_desc")
                 };
 
                 _context.TransitRoutes.Add(route);
@@ -256,38 +322,38 @@ namespace TransitFeeds.Services
             }
         }
 
-        private async Task ImportTrips(string path, Dictionary<string, int> routeMap, Dictionary<string, int> serviceMap, Dictionary<string, int> shapeMap, Dictionary<string, int> tripMap)
+        private async Task ImportTrips(string path, Dictionary<string, int> routeMap, Dictionary<string, int> serviceMap, Dictionary<string, int> shapeMap, Dictionary<string, int> tripMap, CsvConfiguration config)
         {
             var file = Path.Combine(path, "trips.txt");
             if (!File.Exists(file)) return;
 
             using var reader = new StreamReader(file);
-            var headers = GetHeaders(reader);
+            using var csv = new CsvReader(reader, config);
+            var records = csv.GetRecords<dynamic>();
 
-            while (!reader.EndOfStream)
+            foreach (var r in records)
             {
-                var line = await reader.ReadLineAsync();
-                var values = ParseCsvLine(line);
-                var gtfsId = GetValue(headers, values, "trip_id");
+                var dict = (IDictionary<string, object>)r;
+                var gtfsId = GetValue(dict, "trip_id");
                 if (string.IsNullOrEmpty(gtfsId)) continue;
 
-                var routeGtfsId = GetValue(headers, values, "route_id");
-                var serviceGtfsId = GetValue(headers, values, "service_id");
-                var shapeGtfsId = GetValue(headers, values, "shape_id");
+                var routeId = GetValue(dict, "route_id");
+                var serviceId = GetValue(dict, "service_id");
+                var shapeId = GetValue(dict, "shape_id");
 
-                if (!routeMap.ContainsKey(routeGtfsId) || !serviceMap.ContainsKey(serviceGtfsId)) continue;
+                if (!routeMap.ContainsKey(routeId) || !serviceMap.ContainsKey(serviceId)) continue;
 
                 var trip = new Trip
                 {
                     GtfsTripId = gtfsId,
-                    TransitRouteId = routeMap[routeGtfsId],
-                    ServiceId = serviceMap[serviceGtfsId],
-                    ShapeId = !string.IsNullOrEmpty(shapeGtfsId) && shapeMap.ContainsKey(shapeGtfsId) ? shapeMap[shapeGtfsId] : (int?)null,
-                    TripHeadsign = GetValue(headers, values, "trip_headsign"),
-                    TripShortName = GetValue(headers, values, "trip_short_name"),
-                    DirectionId = ParseByte(GetValue(headers, values, "direction_id")),
-                    WheelchairAccessible = ParseByte(GetValue(headers, values, "wheelchair_accessible")),
-                    BlockId = GetValue(headers, values, "block_id")
+                    TransitRouteId = routeMap[routeId],
+                    ServiceId = serviceMap[serviceId],
+                    ShapeId = !string.IsNullOrEmpty(shapeId) && shapeMap.ContainsKey(shapeId) ? shapeMap[shapeId] : (int?)null,
+                    TripHeadsign = GetValue(dict, "trip_headsign"),
+                    TripShortName = GetValue(dict, "trip_short_name"),
+                    DirectionId = ParseByte(GetValue(dict, "direction_id")),
+                    WheelchairAccessible = ParseByte(GetValue(dict, "wheelchair_accessible")),
+                    BlockId = GetValue(dict, "block_id")
                 };
 
                 _context.Trips.Add(trip);
@@ -296,38 +362,37 @@ namespace TransitFeeds.Services
             }
         }
 
-        private async Task ImportStopTimes(string path, Dictionary<string, int> tripMap, Dictionary<string, int> stopMap)
+        private async Task ImportStopTimes(string path, Dictionary<string, int> tripMap, Dictionary<string, int> stopMap, CsvConfiguration config)
         {
             var file = Path.Combine(path, "stop_times.txt");
             if (!File.Exists(file)) return;
 
             using var reader = new StreamReader(file);
-            var headers = GetHeaders(reader);
+            using var csv = new CsvReader(reader, config);
 
+            var records = csv.GetRecords<dynamic>();
             var batch = new List<StopTime>();
             int count = 0;
 
-            while (!reader.EndOfStream)
+            foreach (var r in records)
             {
-                var line = await reader.ReadLineAsync();
-                var values = ParseCsvLine(line);
+                var dict = (IDictionary<string, object>)r;
+                var tripId = GetValue(dict, "trip_id");
+                var stopId = GetValue(dict, "stop_id");
 
-                var tripGtfsId = GetValue(headers, values, "trip_id");
-                var stopGtfsId = GetValue(headers, values, "stop_id");
-
-                if (!tripMap.ContainsKey(tripGtfsId) || !stopMap.ContainsKey(stopGtfsId)) continue;
+                if (!tripMap.ContainsKey(tripId) || !stopMap.ContainsKey(stopId)) continue;
 
                 var stopTime = new StopTime
                 {
-                    TripId = tripMap[tripGtfsId],
-                    StopId = stopMap[stopGtfsId],
-                    StopSequence = ParseInt(GetValue(headers, values, "stop_sequence")) ?? 0,
-                    ArrivalTime = ParseTime(GetValue(headers, values, "arrival_time")),
-                    DepartureTime = ParseTime(GetValue(headers, values, "departure_time")),
-                    StopHeadsign = GetValue(headers, values, "stop_headsign"),
-                    PickupType = ParseByte(GetValue(headers, values, "pickup_type")),
-                    DropOffType = ParseByte(GetValue(headers, values, "drop_off_type")),
-                    ShapeDistTraveled = ParseDouble(GetValue(headers, values, "shape_dist_traveled"))
+                    TripId = tripMap[tripId],
+                    StopId = stopMap[stopId],
+                    StopSequence = ParseInt(GetValue(dict, "stop_sequence")) ?? 0,
+                    ArrivalTime = ParseTime(GetValue(dict, "arrival_time")),
+                    DepartureTime = ParseTime(GetValue(dict, "departure_time")),
+                    StopHeadsign = GetValue(dict, "stop_headsign"),
+                    PickupType = ParseByte(GetValue(dict, "pickup_type")),
+                    DropOffType = ParseByte(GetValue(dict, "drop_off_type")),
+                    ShapeDistTraveled = ParseDouble(GetValue(dict, "shape_dist_traveled"))
                 };
 
                 batch.Add(stopTime);
@@ -337,6 +402,7 @@ namespace TransitFeeds.Services
                 {
                     _context.StopTimes.AddRange(batch);
                     await _context.SaveChangesAsync();
+                    _context.ChangeTracker.Clear();
                     batch.Clear();
                     count = 0;
                 }
@@ -345,85 +411,26 @@ namespace TransitFeeds.Services
             {
                 _context.StopTimes.AddRange(batch);
                 await _context.SaveChangesAsync();
+                _context.ChangeTracker.Clear();
             }
         }
 
-        private async Task ImportShapePoints(string path, Dictionary<string, int> shapeMap)
+        // --- Helpers ---
+
+        private string? GetValue(IDictionary<string, object> dict, string key)
         {
-            var file = Path.Combine(path, "shapes.txt");
-            if (!File.Exists(file)) return;
-
-            using var reader = new StreamReader(file);
-            var headers = GetHeaders(reader);
-
-            var batch = new List<Shape>();
-            int count = 0;
-
-            while (!reader.EndOfStream)
+            var normalizedKey = key.Replace("_", "").Replace(" ", "").ToLower();
+            
+            foreach (var k in dict.Keys)
             {
-                var line = await reader.ReadLineAsync();
-                var values = ParseCsvLine(line);
-                var shapeGtfsId = GetValue(headers, values, "shape_id");
-
-                if (string.IsNullOrEmpty(shapeGtfsId) || !shapeMap.ContainsKey(shapeGtfsId)) continue;
-
-                var shape = new Shape
+                var normalizedDictKey = k.Replace("_", "").Replace(" ", "").ToLower();
+                if (normalizedDictKey == normalizedKey)
                 {
-                    ShapeId = shapeMap[shapeGtfsId],
-                    ShapePtSequence = ParseInt(GetValue(headers, values, "shape_pt_sequence")) ?? 0,
-                    ShapePtLat = ParseDecimal(GetValue(headers, values, "shape_pt_lat")),
-                    ShapePtLon = ParseDecimal(GetValue(headers, values, "shape_pt_lon")),
-                    ShapeDistTraveled = ParseDecimal(GetValue(headers, values, "shape_dist_traveled"))
-                };
-
-                batch.Add(shape);
-                count++;
-
-                if (count >= 1000)
-                {
-                    _context.Shapes.AddRange(batch);
-                    await _context.SaveChangesAsync();
-                    batch.Clear();
-                    count = 0;
+                    var val = dict[k]?.ToString()?.Trim();
+                    return string.IsNullOrEmpty(val) ? null : val;
                 }
             }
-            if (batch.Any())
-            {
-                _context.Shapes.AddRange(batch);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        // Helpers
-        private HeaderMap GetHeaders(StreamReader reader)
-        {
-            var line = reader.ReadLine();
-            var map = new Dictionary<string, int>();
-            if (line == null) return new HeaderMap(map);
-
-            var parts = ParseCsvLine(line);
-            for (int i = 0; i < parts.Length; i++)
-            {
-                map[parts[i].Trim().ToLower()] = i;
-            }
-            return new HeaderMap(map);
-        }
-
-        private string? GetValue(HeaderMap headers, string[] values, string key)
-        {
-            var index = headers.GetIndex(key);
-            if (index.HasValue && index.Value < values.Length)
-            {
-                var val = values[index.Value].Trim();
-                return string.IsNullOrEmpty(val) ? null : val;
-            }
             return null;
-        }
-
-        private string[] ParseCsvLine(string line)
-        {
-            // Simple split for now, robust CSV parsing is complex
-            return line.Split(','); 
         }
 
         private decimal ParseDecimal(string? val) => decimal.TryParse(val, NumberStyles.Any, CultureInfo.InvariantCulture, out var d) ? d : 0;
@@ -442,135 +449,13 @@ namespace TransitFeeds.Services
             var parts = val.Split(':');
             if (parts.Length >= 2)
             {
-                int h = int.Parse(parts[0]);
-                int m = int.Parse(parts[1]);
-                int s = parts.Length > 2 ? int.Parse(parts[2]) : 0;
-                return new TimeSpan(h, m, s);
+                if (int.TryParse(parts[0], out int h) && int.TryParse(parts[1], out int m))
+                {
+                    int s = parts.Length > 2 && int.TryParse(parts[2], out int sec) ? sec : 0;
+                    return new TimeSpan(h, m, s);
+                }
             }
             return null;
-        }
-
-        // Intelligent Header Matching
-        private class HeaderMap
-        {
-            private readonly Dictionary<string, int> _map;
-            private readonly Dictionary<string, int> _cache = new();
-
-            private static readonly Dictionary<string, string[]> ColumnAliases = new()
-            {
-                { "agency_id", new[] { "agency_code", "agencyid" } },
-                { "agency_name", new[] { "agencyname", "name" } },
-                { "stop_id", new[] { "stopid", "id" } },
-                { "stop_code", new[] { "stopcode", "code" } },
-                { "stop_name", new[] { "stopname", "name" } },
-                { "stop_lat", new[] { "stop_latitude", "latitude", "lat" } },
-                { "stop_lon", new[] { "stop_longitude", "longitude", "lon", "lng" } },
-                { "route_id", new[] { "routeid", "id" } },
-                { "route_short_name", new[] { "route_short", "short_name", "route_name" } },
-                { "route_long_name", new[] { "route_long", "long_name" } },
-                { "trip_id", new[] { "tripid", "id" } },
-                { "service_id", new[] { "serviceid", "service" } },
-                { "shape_id", new[] { "shapeid", "shape" } },
-                { "arrival_time", new[] { "arrival", "arrivaltime" } },
-                { "departure_time", new[] { "departure", "departuretime" } },
-                { "stop_sequence", new[] { "stop_seq", "sequence", "seq" } },
-                { "shape_pt_lat", new[] { "shape_lat", "lat", "latitude" } },
-                { "shape_pt_lon", new[] { "shape_lon", "lon", "lng", "longitude" } },
-                { "shape_pt_sequence", new[] { "shape_seq", "sequence", "seq", "pt_sequence" } },
-                { "shape_dist_traveled", new[] { "shape_dist", "dist_traveled", "dist" } }
-            };
-
-            public HeaderMap(Dictionary<string, int> map)
-            {
-                _map = map;
-            }
-
-            public int? GetIndex(string key)
-            {
-                if (_cache.ContainsKey(key)) return _cache[key];
-
-                // 1. Exact match
-                if (_map.ContainsKey(key))
-                {
-                    _cache[key] = _map[key];
-                    return _map[key];
-                }
-
-                // 2. Alias match
-                if (ColumnAliases.ContainsKey(key))
-                {
-                    foreach (var alias in ColumnAliases[key])
-                    {
-                        if (_map.ContainsKey(alias))
-                        {
-                            _cache[key] = _map[alias];
-                            return _map[alias];
-                        }
-                    }
-                }
-
-                // 3. Fuzzy / Contains match
-                // Find the key in _map that is "closest"
-                var bestMatch = FindBestMatch(key, _map.Keys);
-                if (bestMatch != null)
-                {
-                    _cache[key] = _map[bestMatch];
-                    return _map[bestMatch];
-                }
-
-                return null;
-            }
-
-            private string? FindBestMatch(string target, IEnumerable<string> candidates)
-            {
-                string? bestCandidate = null;
-                int bestDistance = int.MaxValue;
-
-                foreach (var candidate in candidates)
-                {
-                    // Simple contains check first
-                    if (candidate.Contains(target) || target.Contains(candidate))
-                    {
-                        return candidate;
-                    }
-
-                    // Levenshtein distance
-                    int dist = ComputeLevenshteinDistance(target, candidate);
-                    if (dist < bestDistance)
-                    {
-                        bestDistance = dist;
-                        bestCandidate = candidate;
-                    }
-                }
-
-                // Only return if distance is small enough (e.g. <= 2)
-                return bestDistance <= 2 ? bestCandidate : null;
-            }
-
-            private int ComputeLevenshteinDistance(string s, string t)
-            {
-                int n = s.Length;
-                int m = t.Length;
-                int[,] d = new int[n + 1, m + 1];
-
-                if (n == 0) return m;
-                if (m == 0) return n;
-
-                for (int i = 0; i <= n; d[i, 0] = i++) { }
-                for (int j = 0; j <= m; d[0, j] = j++) { }
-
-                for (int i = 1; i <= n; i++)
-                {
-                    for (int j = 1; j <= m; j++)
-                    {
-                        int cost = (t[j - 1] == s[i - 1]) ? 0 : 1;
-                        d[i, j] = Math.Min(
-                            Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
-                            d[i - 1, j - 1] + cost);
-                    }
-                }
-                return d[n, m];
-            }
         }
     }
 }

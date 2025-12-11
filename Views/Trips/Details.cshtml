@@ -2,58 +2,197 @@
 
 @{
     ViewData["Title"] = "Trip Details";
+    
+    // Prepare chart: Time vs Sequence
+    // Converts times to decimal hours (e.g., 8:30 -> 8.5)
+    var stops = Model.StopTimes?.OrderBy(st => st.StopSequence).ToList() ?? new List<TransitFeeds.Models.StopTime>();
+    
+    var sequenceLabels = System.Text.Json.JsonSerializer.Serialize(stops.Select(s => s.Stop?.StopName ?? $"Stop {s.StopSequence}"));
+    
+    var arrivalData = stops.Select(s => s.ArrivalTime != null ? s.ArrivalTime.Value.TotalHours : 0).ToList();
+    var departureData = stops.Select(s => s.DepartureTime != null ? s.DepartureTime.Value.TotalHours : 0).ToList();
+
+    var arrivalJson = System.Text.Json.JsonSerializer.Serialize(arrivalData);
+    
+    // Calculate total duration
+    TimeSpan duration = TimeSpan.Zero;
+    var firstStop = stops.FirstOrDefault();
+    var lastStop = stops.LastOrDefault();
+    if (firstStop?.DepartureTime != null && lastStop?.ArrivalTime != null)
+    {
+        duration = lastStop.ArrivalTime.Value - firstStop.DepartureTime.Value;
+    }
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
-    </div>
-    <div class="header-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">GTFS ID</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsTripId)</dd>
-
-                <dt class="col-sm-3">Route</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.TransitRoute.RouteShortName)</dd>
-
-                <dt class="col-sm-3">Service</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.TransitCalendar.GtfsServiceId)</dd>
-
-                <dt class="col-sm-3">Shape</dt>
-                <dd class="col-sm-9">
-                    @if (Model.ShapesMaster != null)
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+             <div class="h-16 w-16 rounded-2xl flex items-center justify-center text-xl font-bold bg-indigo-50 text-indigo-600 shadow-soft">
+                <i class="fas fa-route"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">@Model.GtfsTripId</h1>
+                <p class="text-gray-500 mt-1">
+                    Route: <span class="font-medium text-gray-900">@Model.TransitRoute?.RouteShortName</span>
+                    @if (!string.IsNullOrEmpty(Model.TripHeadsign))
                     {
-                        @Html.DisplayFor(model => model.ShapesMaster.GtfsShapeId)
+                        <span> • Headsign: <span class="font-medium text-gray-900">@Model.TripHeadsign</span></span>
                     }
-                    else
-                    {
-                        <span class="text-muted">-</span>
-                    }
-                </dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.TripHeadsign)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.TripHeadsign)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.TripShortName)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.TripShortName)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DirectionId)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.DirectionId)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.WheelchairAccessible)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.WheelchairAccessible)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.BlockId)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.BlockId)</dd>
-            </dl>
+                </p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                Back to List
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
+                Edit Trip
+            </a>
         </div>
     </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Details Card -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Parameters</h2>
+                <dl class="space-y-4">
+                    <div>
+                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Service</dt>
+                        <dd class="text-sm font-medium text-gray-900">@(Model.TransitCalendar?.GtfsServiceId ?? "N/A")</dd>
+                    </div>
+                    <div>
+                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Shape</dt>
+                        <dd class="text-sm font-medium text-gray-900 break-all">
+                            @if (Model.ShapesMaster != null)
+                            {
+                                <a asp-controller="ShapesMaster" asp-action="Details" asp-route-id="@Model.ShapesMaster.Id" class="text-blue-600 hover:underline">
+                                    @Model.ShapesMaster.GtfsShapeId
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="text-gray-400">None</span>
+                            }
+                        </dd>
+                    </div>
+                     <div>
+                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Direction</dt>
+                        <dd class="text-sm font-medium text-gray-900">@(Model.DirectionId == (byte)0 ? "Outbound (0)" : "Inbound (1)")</dd>
+                    </div>
+                     <div>
+                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Block ID</dt>
+                        <dd class="text-sm font-medium text-gray-900">@Model.BlockId</dd>
+                    </div>
+                     <div>
+                        <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Duration</dt>
+                        <dd class="text-sm font-medium text-green-600">@duration.ToString(@"hh\h\ mm\m")</dd>
+                    </div>
+                </dl>
+            </div>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-soft p-6 border border-gray-100 flex flex-col">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Trip Timeline</h2>
+            <div class="relative h-80 w-full">
+                <canvas id="tripChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 text-center">Progression of scheduled arrival times at each stop sequence.</p>
+        </div>
+        
+        <!-- Stop Table (Full Width below) -->
+        <div class="lg:col-span-3 bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Stop Schedule</h2>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="text-xs text-gray-500 uppercase bg-gray-50 border-b border-gray-100">
+                        <tr>
+                            <th class="px-4 py-3 font-medium">Seq</th>
+                            <th class="px-4 py-3 font-medium">Stop</th>
+                            <th class="px-4 py-3 font-medium">Arrival</th>
+                            <th class="px-4 py-3 font-medium">Departure</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100">
+                        @foreach (var st in stops)
+                        {
+                            <tr class="hover:bg-gray-50/50 transition-colors">
+                                <td class="px-4 py-3 font-mono text-gray-400">@st.StopSequence</td>
+                                <td class="px-4 py-3 font-medium text-gray-900">
+                                    <a asp-controller="Stops" asp-action="Details" asp-route-id="@st.StopId" class="hover:text-blue-600 transition-colors">
+                                        @(st.Stop?.StopName ?? st.StopId.ToString())
+                                    </a>
+                                </td>
+                                <td class="px-4 py-3 font-mono text-gray-600">@(st.ArrivalTime?.ToString(@"hh\:mm") ?? "-")</td>
+                                <td class="px-4 py-3 font-mono text-gray-600">@(st.DepartureTime?.ToString(@"hh\:mm") ?? "-")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('tripChart').getContext('2d');
+        
+        // Convert decimal hours back to HH:MM for tooltip
+        function formatTime(val) {
+            const h = Math.floor(val);
+            const m = Math.round((val - h) * 60);
+            return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`;
+        }
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(sequenceLabels),
+                datasets: [{
+                    label: 'Arrival Time',
+                    data: @Html.Raw(arrivalJson),
+                    borderColor: '#4f46e5', // Indigo
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#4f46e5',
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: false,
+                    tension: 0.1 // Straight lines
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 10, maxRotation: 45, minRotation: 45 }
+                    },
+                    y: {
+                        title: { display: true, text: 'Time of Day (Hour)' },
+                        grid: { borderDash: [2, 4], color: '#f3f4f6' },
+                        ticks: {
+                            callback: function(value) { return formatTime(value); } 
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Arrival: ' + formatTime(context.parsed.y);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransitFeeds.Data;
+using TransitFeeds.Models;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace TransitFeeds.Controllers
 {
@@ -15,17 +17,19 @@ namespace TransitFeeds.Controllers
             _context = context;
         }
 
-        // GET: /Map
         public IActionResult Index()
         {
             return View();
         }
 
-        // GET: /Map/GetStops - returns all stops as JSON for map plotting
+        // GET: /Map/GetStopsInBounds?minLat=...
         [HttpGet]
-        public async Task<IActionResult> GetStops()
+        public async Task<IActionResult> GetStopsInBounds(decimal minLat, decimal maxLat, decimal minLon, decimal maxLon)
         {
+            // Limit query to viewport
             var stops = await _context.Stops
+                .Where(s => s.StopLat >= minLat && s.StopLat <= maxLat &&
+                            s.StopLon >= minLon && s.StopLon <= maxLon)
                 .Select(s => new
                 {
                     id = s.Id,
@@ -34,43 +38,58 @@ namespace TransitFeeds.Controllers
                     lon = s.StopLon,
                     gtfsId = s.GtfsStopId
                 })
+                .Take(2000) // Safety cap
                 .ToListAsync();
 
             return Json(stops);
         }
 
-        // GET: /Map/GetRoutes - returns route shapes as JSON
+        // GET: /Map/GetRouteList
         [HttpGet]
-        public async Task<IActionResult> GetRoutes()
+        public async Task<IActionResult> GetRouteList()
         {
             var routes = await _context.TransitRoutes
-                .Include(r => r.Agency)
+                .AsNoTracking()
                 .Select(r => new
                 {
                     id = r.Id,
-                    name = r.RouteLongName,
                     shortName = r.RouteShortName,
+                    longName = r.RouteLongName,
                     color = r.RouteColor,
-                    agencyName = r.Agency != null ? r.Agency.AgencyName : ""
+                    textColor = r.RouteTextColor
                 })
+                .OrderBy(r => r.shortName)
                 .ToListAsync();
 
             return Json(routes);
         }
 
-        // GET: /Map/GetShapes - returns shape points for drawing route paths
+        // GET: /Map/GetRouteShapes?routeId=...
         [HttpGet]
-        public async Task<IActionResult> GetShapes()
+        public async Task<IActionResult> GetRouteShapes(int routeId)
         {
+            // 1. Get Trips for this route
+            // 2. Get Distinct Shape IDs used by these trips
+            // 3. Get Points for those shapes
+
+            // This approach avoids loading useless shapes not used by the route.
+            var shapeIds = await _context.Trips
+                .Where(t => t.TransitRouteId == routeId && t.ShapeId != null)
+                .Select(t => t.ShapeId.Value) // Select Value strictly
+                .Distinct()
+                .ToListAsync();
+
+            if (!shapeIds.Any()) return Json(new List<object>());
+
             var shapes = await _context.Shapes
+                .Where(s => shapeIds.Contains(s.ShapeId))
                 .OrderBy(s => s.ShapeId)
                 .ThenBy(s => s.ShapePtSequence)
                 .Select(s => new
                 {
                     shapeId = s.ShapeId,
                     lat = s.ShapePtLat,
-                    lon = s.ShapePtLon,
-                    sequence = s.ShapePtSequence
+                    lon = s.ShapePtLon
                 })
                 .ToListAsync();
 

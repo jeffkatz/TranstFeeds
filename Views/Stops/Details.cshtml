@@ -2,60 +2,166 @@
 
 @{
     ViewData["Title"] = "Stop Details";
+    
+    // Prepare chart: Activity by Hour
+    // Group by hour of arrival
+    var activityByHour = new int[24];
+    if (Model.StopTimes != null)
+    {
+        foreach (var st in Model.StopTimes)
+        {
+            if (st.ArrivalTime.HasValue)
+            {
+                var h = st.ArrivalTime.Value.Hours;
+                if (h >= 0 && h < 24) activityByHour[h]++;
+            }
+        }
+    }
+
+    var labels = System.Text.Json.JsonSerializer.Serialize(Enumerable.Range(0, 24).Select(h => $"{h}:00"));
+    var data = System.Text.Json.JsonSerializer.Serialize(activityByHour);
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+             <div class="h-16 w-16 rounded-2xl flex items-center justify-center text-2xl bg-orange-100 text-orange-600 shadow-soft">
+                <i class="fas fa-map-pin"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">@Model.StopName</h1>
+                <p class="text-gray-500 mt-1">@Model.GtfsStopId • @Model.StopCode</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                Back to List
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
+                Edit Stop
+            </a>
+        </div>
     </div>
-    <div class="header-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
-</div>
 
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">GTFS ID</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsStopId)</dd>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Details Card -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Overview</h2>
+            
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
+                <!-- Location -->
+                <div class="col-span-1 sm:col-span-2">
+                    <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Location</dt>
+                    <dd class="flex items-start gap-4">
+                        <div class="flex-1 bg-gray-50 rounded-xl p-4 border border-gray-100">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-500">Latitude</span>
+                                <span class="font-mono text-gray-900 font-medium">@Model.StopLat</span>
+                            </div>
+                             <div class="flex items-center justify-between mt-2">
+                                <span class="text-sm text-gray-500">Longitude</span>
+                                <span class="font-mono text-gray-900 font-medium">@Model.StopLon</span>
+                            </div>
+                        </div>
+                        <a href="https://www.google.com/maps/search/?api=1&query=@Model.StopLat,@Model.StopLon" target="_blank" 
+                           class="flex-shrink-0 h-full w-12 flex items-center justify-center bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors" title="View in Google Maps">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </dd>
+                </div>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopCode)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopCode)</dd>
+                <!-- Attributes -->
+                 <div>
+                    <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Details</dt>
+                    <dd class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-sm text-gray-600">Wheelchair Access</span>
+                            <span class="text-sm font-medium @(Model.WheelchairBoarding == (byte)1 ? "text-green-600" : "text-gray-900")">
+                                @(Model.WheelchairBoarding == (byte)1 ? "Accessible" : (Model.WheelchairBoarding == (byte)2 ? "Not Accessible" : "Unknown"))
+                            </span>
+                        </div>
+                        <div class="flex justify-between">
+                             <span class="text-sm text-gray-600">Type</span>
+                            <span class="text-sm font-medium text-gray-900">
+                                @(Model.LocationType == (byte)1 ? "Station" : "Stop")
+                            </span>
+                        </div>
+                         <div class="flex justify-between">
+                             <span class="text-sm text-gray-600">Zone</span>
+                            <span class="text-sm font-medium text-gray-900">@Model.ZoneId</span>
+                        </div>
+                    </dd>
+                </div>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopName)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopName)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopDesc)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopDesc)</dd>
-
-                <dt class="col-sm-3">Coordinates</dt>
-                <dd class="col-sm-9">@Model.StopLat, @Model.StopLon</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ZoneId)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.ZoneId)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopUrl)</dt>
-                <dd class="col-sm-9">
-                    @if (!string.IsNullOrEmpty(Model.StopUrl))
-                    {
-                        <a href="@Model.StopUrl" target="_blank">@Model.StopUrl</a>
-                    }
-                </dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.LocationType)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.LocationType)</dd>
-
-                <dt class="col-sm-3">Parent Station</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.ParentStation.StopName)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopTimezone)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopTimezone)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.WheelchairBoarding)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.WheelchairBoarding)</dd>
+                 <div>
+                    <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Misc</dt>
+                    <dd class="space-y-3">
+                        <div class="flex flex-col">
+                            <span class="text-sm text-gray-600 mb-1">Description</span>
+                             <span class="text-sm font-medium text-gray-900">@Model.StopDesc</span>
+                        </div>
+                    </dd>
+                </div>
             </dl>
+        </div>
+
+        <!-- Visualization Card -->
+        <div class="bg-white rounded-2xl shadow-soft p-6 border border-gray-100 flex flex-col">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Peak Hours</h2>
+            <div class="relative h-64 w-full">
+                <canvas id="stopChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 text-center">Hourly volume of scheduled departures/arrivals.</p>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('stopChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: @Html.Raw(labels),
+                datasets: [{
+                    label: 'Arrivals',
+                    data: @Html.Raw(data),
+                    borderColor: 'rgba(249, 115, 22, 1)', // Orange
+                    backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { maxTicksLimit: 8, font: { size: 10 } }
+                    },
+                    y: {
+                        grid: { borderDash: [2, 4], color: '#f3f4f6' },
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+    </script>
+}

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - TransitFeeds</title>
 
-    <!-- ==== AdminLTE CSS ==== -->
+    <!-- ==== AdminLTE CSS (Keeping for JS dependencies, but overriding visuals) ==== -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/css/adminlte.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fortawesome/fontawesome-free@6.5/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/overlayScrollbars@2.1/css/OverlayScrollbars.min.css" />
 
     <!-- ==== Tailwind CDN (utility-first) ==== -->
@@ -17,78 +17,169 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'San Francisco', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'sans-serif'],
                     },
                     colors: {
-                        indigo: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
+                        apple: {
+                            gray: '#f5f5f7',
+                            blue: '#0071e3',
+                            bg: '#fbfbfd',
+                            border: '#d2d2d7'
                         }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px rgba(0,0,0,0.03)',
+                        'medium': '0 8px 30px rgba(0,0,0,0.04)',
                     }
                 }
             }
         }
     </script>
+    
+    <style>
+        /* Apple-style overrides */
+        body {
+            background-color: #f5f5f7 !important;
+            font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    <!-- ==== Custom Premium Styles ==== -->
-    <link rel="stylesheet" href="~/css/custom.css" asp-append-version="true" />
+        .main-header {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+            box-shadow: none !important;
+        }
+
+        .main-sidebar {
+            background-color: #ffffff !important;
+            box-shadow: 1px 0 0 rgba(0,0,0,0.05) !important;
+            border-right: none !important;
+        }
+
+        .brand-link {
+            border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+        }
+
+        .nav-link {
+            border-radius: 8px !important;
+            color: #1d1d1f !important;
+            font-weight: 500;
+            padding: 8px 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            background-color: rgba(0,0,0,0.03) !important;
+            color: #0071e3 !important;
+        }
+
+        .nav-link.active {
+            background-color: rgba(0, 113, 227, 0.1) !important;
+            color: #0071e3 !important;
+            box-shadow: none !important;
+        }
+
+        .nav-icon {
+            color: #86868b;
+            font-size: 0.9rem !important;
+            margin-right: 0.5rem !important;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover .nav-icon, .nav-link.active .nav-icon {
+            color: #0071e3 !important;
+        }
+
+        .content-wrapper {
+            background-color: #f5f5f7 !important;
+        }
+
+        .card {
+            border: none !important;
+            border-radius: 16px !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02) !important;
+            background: white !important;
+        }
+
+        /* Clean Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d1d6;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8e8e93;
+        }
+    </style>
 </head>
-<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed font-sans bg-gray-50">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed text-gray-800">
     <div class="wrapper">
 
         <!-- ==== Header (Navbar) ==== -->
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light border-b-0">
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light h-14">
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
-                <li class="nav-item d-none d-sm-inline-block">
-                    <a href="/" class="nav-link font-medium">Dashboard</a>
+                 <li class="nav-item d-none d-sm-inline-block">
+                    <span class="nav-link text-gray-400 font-medium select-none">@ViewData["Title"]</span>
                 </li>
             </ul>
             
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto gap-4 px-4">
                 <li class="nav-item">
-                    <a class="nav-link" href="#" role="button">
-                        <i class="fas fa-bell text-gray-400"></i>
+                    <a class="text-gray-400 hover:text-gray-600 transition-colors" href="#" role="button">
+                        <i class="fas fa-search"></i>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" role="button">
-                        <img src="https://ui-avatars.com/api/?name=Admin&background=random" class="h-8 w-8 rounded-full -mt-1 shadow-sm" alt="User Image">
+                    <a class="text-gray-400 hover:text-gray-600 transition-colors" href="#" role="button">
+                        <i class="fas fa-bell"></i>
                     </a>
+                </li>
+                <li class="nav-item">
+                    <div class="h-8 w-8 rounded-full bg-gray-200 overflow-hidden ring-2 ring-white shadow-sm">
+                        <img src="https://ui-avatars.com/api/?name=Admin&background=0071e3&color=fff" class="h-full w-full object-cover" alt="User">
+                    </div>
                 </li>
             </ul>
         </nav>
 
         <!-- ==== Sidebar ==== -->
-        <aside class="main-sidebar sidebar-light-indigo elevation-0 border-r border-gray-200">
-            <a href="/" class="brand-link bg-white text-center py-4">
-                <span class="brand-text font-bold text-xl text-indigo-600 tracking-tight">TransitFeeds</span>
+        <aside class="main-sidebar sidebar-light-primary elevation-0">
+            <a href="/" class="brand-link h-14 flex items-center justify-center">
+                <span class="brand-text font-semibold text-lg tracking-tight text-gray-900">
+                    <i class="fas fa-bus-alt text-blue-600 mr-2"></i>TransitFeeds
+                </span>
             </a>
 
-            <div class="sidebar mt-2">
+            <div class="sidebar px-3 mt-3">
                 <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column space-y-1" data-widget="treeview" role="menu" data-accordion="false">
+                    <ul class="nav nav-pills nav-sidebar flex-column gap-1" data-widget="treeview" role="menu" data-accordion="false">
                         
-                        <li class="nav-header text-xs font-bold text-gray-400 uppercase tracking-wider mt-4 mb-2 px-4">Core</li>
+                        <li class="nav-header text-xs font-semibold text-gray-400 uppercase tracking-widest mt-4 mb-2 pl-2">Overview</li>
                         <li class="nav-item">
                             <a asp-controller="Home" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
-                                <i class="nav-icon fas fa-th-large"></i>
+                                <i class="nav-icon fas fa-chart-pie"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a asp-controller="Map" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Map" ? "active" : "")">
-                                <i class="nav-icon fas fa-map-marked-alt"></i>
+                                <i class="nav-icon fas fa-map"></i>
                                 <p>Live Map</p>
                             </a>
                         </li>
 
-                        <li class="nav-header text-xs font-bold text-gray-400 uppercase tracking-wider mt-6 mb-2 px-4">Data Management</li>
+                        <li class="nav-header text-xs font-semibold text-gray-400 uppercase tracking-widest mt-6 mb-2 pl-2">Transit Data</li>
                         <li class="nav-item">
                             <a asp-controller="Agencies" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Agencies" ? "active" : "")">
                                 <i class="nav-icon fas fa-building"></i>
@@ -127,28 +218,16 @@
                         </li>
                         <li class="nav-item">
                             <a asp-controller="ShapesMaster" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "ShapesMaster" ? "active" : "")">
-                                <i class="nav-icon fas fa-project-diagram"></i>
+                                <i class="nav-icon fas fa-bezier-curve"></i>
                                 <p>Shapes</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a asp-controller="Shapes" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Shapes" ? "active" : "")">
-                                <i class="nav-icon fas fa-draw-polygon"></i>
-                                <p>Shape Points</p>
-                            </a>
-                        </li>
 
-                        <li class="nav-header text-xs font-bold text-gray-400 uppercase tracking-wider mt-6 mb-2 px-4">Tools</li>
+                        <li class="nav-header text-xs font-semibold text-gray-400 uppercase tracking-widest mt-6 mb-2 pl-2">System</li>
                         <li class="nav-item">
                             <a asp-controller="Import" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Import" ? "active" : "")">
-                                <i class="nav-icon fas fa-database"></i>
+                                <i class="nav-icon fas fa-sync"></i>
                                 <p>Import / Export</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a asp-controller="Documentation" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Documentation" ? "active" : "")">
-                                <i class="nav-icon fas fa-book"></i>
-                                <p>Documentation</p>
                             </a>
                         </li>
                     </ul>
@@ -157,18 +236,18 @@
         </aside>
 
         <!-- ==== Main Content ==== -->
-        <div class="content-wrapper bg-gray-50">
-            <section class="content pt-6 px-4">
+        <div class="content-wrapper">
+            <section class="content pt-8 px-6 pb-6">
                 @RenderBody()
             </section>
         </div>
 
         <!-- ==== Footer ==== -->
-        <footer class="main-footer bg-white border-t border-gray-200 text-sm text-gray-500 py-4">
+        <footer class="main-footer bg-white border-t-0 text-xs text-gray-400 py-4 px-6">
             <div class="float-right d-none d-sm-inline">
-                v1.0.0
+                TransitFeeds v1.0
             </div>
-            <strong>&copy; 2025 <a href="#" class="text-indigo-600 hover:text-indigo-800">TransitFeeds</a>.</strong> All rights reserved.
+            <strong>&copy; 2025 TransitFeeds.</strong> Designed with <i class="fas fa-heart text-red-400 mx-1"></i>
         </footer>
     </div>
 
@@ -177,6 +256,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/overlayScrollbars@2.1/js/jquery.overlayScrollbars.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/admin-lte@3.2/dist/js/adminlte.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

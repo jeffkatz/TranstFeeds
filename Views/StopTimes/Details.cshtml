@@ -2,49 +2,128 @@
 
 @{
     ViewData["Title"] = "Stop Time Details";
+    
+    // Calc progress
+    var allStops = Model.Trip?.StopTimes.Count ?? 1;
+    var currentSeq = Model.StopSequence;
+    var progress = (double)currentSeq / allStops;
+    
+    var remaining = allStops - currentSeq;
+    
+    var data = System.Text.Json.JsonSerializer.Serialize(new[] { currentSeq, remaining });
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+             <div class="h-16 w-16 rounded-2xl flex items-center justify-center text-xl font-bold bg-teal-50 text-teal-600 shadow-soft">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Stop #@Model.StopSequence</h1>
+                <p class="text-gray-500 mt-1">
+                    Trip: 
+                    <a asp-controller="Trips" asp-action="Details" asp-route-id="@Model.TripId" class="hover:text-blue-600">
+                        @Model.Trip?.GtfsTripId
+                    </a>
+                </p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                Back to List
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
+                Edit StopTime
+            </a>
+        </div>
     </div>
-    <div class="header-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
-</div>
 
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">Trip</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.Trip.GtfsTripId)</dd>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Details Card -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-white rounded-2xl shadow-soft p-6 border border-gray-100 flex flex-col items-center">
+                 <h2 class="text-lg font-semibold text-gray-900 mb-6 pb-2 border-b border-gray-100 w-full">Trip Progress</h2>
+                 <div class="relative h-48 w-48">
+                    <canvas id="progressChart"></canvas>
+                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                        <span class="text-3xl font-bold text-gray-900">@((progress * 100).ToString("0"))%</span>
+                        <span class="text-xs text-gray-500 uppercase tracking-wide">Complete</span>
+                    </div>
+                 </div>
+                 <p class="text-sm text-gray-500 mt-6 text-center">Stop <span class="font-bold text-gray-900">@currentSeq</span> of <span class="font-bold text-gray-900">@allStops</span></p>
+            </div>
+        </div>
 
-                <dt class="col-sm-3">Stop</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.Stop.StopName)</dd>
+        <!-- Info Card -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-soft p-6 border border-gray-100">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Timing Information</h2>
+             <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-8">
+                 <div>
+                    <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Stop</dt>
+                    <dd class="text-base text-gray-900">
+                        <a asp-controller="Stops" asp-action="Details" asp-route-id="@Model.StopId" class="flex items-center group">
+                            <i class="fas fa-map-pin mr-2 text-gray-400 group-hover:text-blue-500 transition-colors"></i>
+                            <span class="group-hover:text-blue-600 transition-colors">@Model.Stop?.StopName</span>
+                        </a>
+                    </dd>
+                </div>
+                <div>
+                     <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Headsign</dt>
+                    <dd class="text-base text-gray-900">@(string.IsNullOrEmpty(Model.StopHeadsign) ? "-" : Model.StopHeadsign)</dd>
+                </div>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopSequence)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopSequence)</dd>
+                <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                    <dt class="text-xs font-semibold text-blue-400 uppercase tracking-wider mb-1">Arrival</dt>
+                    <dd class="text-2xl font-mono font-medium text-blue-900">@(Model.ArrivalTime?.ToString(@"hh\:mm\:ss") ?? "--:--:--")</dd>
+                </div>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ArrivalTime)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.ArrivalTime)</dd>
+                <div class="bg-orange-50 rounded-xl p-4 border border-orange-100">
+                    <dt class="text-xs font-semibold text-orange-400 uppercase tracking-wider mb-1">Departure</dt>
+                    <dd class="text-2xl font-mono font-medium text-orange-900">@(Model.DepartureTime?.ToString(@"hh\:mm\:ss") ?? "--:--:--")</dd>
+                </div>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DepartureTime)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.DepartureTime)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopHeadsign)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopHeadsign)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.PickupType)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.PickupType)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DropOffType)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.DropOffType)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ShapeDistTraveled)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.ShapeDistTraveled)</dd>
+                 <div>
+                    <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Shape Distance</dt>
+                    <dd class="text-base font-mono text-gray-900">@Model.ShapeDistTraveled</dd>
+                </div>
+                 <div>
+                    <dt class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Pickup / Dropoff</dt>
+                    <dd class="text-sm text-gray-600">
+                        Type @Model.PickupType / Type @Model.DropOffType
+                    </dd>
+                </div>
             </dl>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Remaining'],
+                datasets: [{
+                    data: @Html.Raw(data),
+                    backgroundColor: [
+                        '#0d9488', // Teal 600
+                        '#f3f4f6'  // Gray 100
+                    ],
+                    borderWidth: 0,
+                    cutout: '75%'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                }
+            }
+        });
+    </script>
+}

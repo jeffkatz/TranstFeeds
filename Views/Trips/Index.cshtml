@@ -4,60 +4,96 @@
     ViewData["Title"] = "Trips";
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
-    </div>
-    <div class="header-actions">
-        <a asp-action="Create" class="btn btn-primary">
-            <span>+ New Trip</span>
-        </a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="search-container" style="flex: 1; max-width: 400px;">
-            <input type="text" id="searchInput" class="form-control search-input" placeholder="Search trips..." onkeyup="filterTable()">
+<div class="container mx-auto px-4 py-8">
+    
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Trips</h1>
+            <p class="text-gray-500 mt-1">Manage scheduled trips and their assignments</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm">
+                <i class="fas fa-plus mr-2"></i> New Trip
+            </a>
         </div>
     </div>
 
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table" id="tripsTable">
-                <thead>
+    <!-- Search & Filters -->
+    <div class="bg-white rounded-t-xl border border-gray-200 p-4 border-b-0">
+        <div class="relative max-w-md w-full">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input type="text" id="searchInput" onkeyup="filterTable()" 
+                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out" 
+                   placeholder="Search trips by ID, route, or headsign...">
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white shadow-sm rounded-b-xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200" id="tripsTable">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th>GTFS ID</th>
-                        <th>Route</th>
-                        <th>Service</th>
-                        <th>Headsign</th>
-                        <th>Short Name</th>
-                        <th>Direction</th>
-                        <th style="text-align: right;">Actions</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trip ID</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Route</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Headsign</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Direction</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200">
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.GtfsTripId)</td>
-                            <td>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                @Html.DisplayFor(modelItem => item.GtfsTripId)
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 @if (item.TransitRoute != null)
                                 {
-                                    <span class="badge" style="background-color: #@(item.TransitRoute.RouteColor ?? "999"); color: #@(item.TransitRoute.RouteTextColor ?? "fff");">
-                                        @item.TransitRoute.RouteShortName
-                                    </span>
+                                   <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-8 w-8 flex items-center justify-center rounded shadow-sm font-bold text-xs" 
+                                             style="background-color: #@(item.TransitRoute.RouteColor ?? "e0e7ff"); color: #@(item.TransitRoute.RouteTextColor ?? "3730a3");">
+                                            @item.TransitRoute.RouteShortName
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <span class="text-xs text-gray-400">N/A</span>
                                 }
                             </td>
-                            <td>@Html.DisplayFor(modelItem => item.TransitCalendar.GtfsServiceId)</td>
-                            <td>@Html.DisplayFor(modelItem => item.TripHeadsign)</td>
-                            <td>@Html.DisplayFor(modelItem => item.TripShortName)</td>
-                            <td>@Html.DisplayFor(modelItem => item.DirectionId)</td>
-                            <td style="text-align: right;">
-                                <div class="btn-group">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Details</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @Html.DisplayFor(modelItem => item.TripHeadsign)
+                                @if(!string.IsNullOrEmpty(item.TripShortName)) {
+                                    <span class="text-xs text-gray-400 ml-1">(@item.TripShortName)</span>
+                                }
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                                @if(item.TransitCalendar != null) {
+                                    <span>@item.TransitCalendar.GtfsServiceId</span>
+                                } else {
+                                     <span class="text-gray-300">-</span>
+                                }
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                @Html.DisplayFor(modelItem => item.DirectionId)
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-info"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -65,6 +101,14 @@
                 </tbody>
             </table>
         </div>
+        @if (!Model.Any())
+        {
+            <div class="text-center py-10">
+                <div class="text-gray-400 mb-2 text-4xl"><i class="fas fa-bus"></i></div>
+                <p class="text-gray-500">No trips found.</p>
+                <a asp-action="Create" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm mt-2 inline-block">Create the first trip</a>
+            </div>
+        }
     </div>
 </div>
 
@@ -74,25 +118,16 @@
             const input = document.getElementById('searchInput');
             const filter = input.value.toLowerCase();
             const table = document.getElementById('tripsTable');
-            const rows = table.getElementsByTagName('tr');
+            const rows = table.querySelectorAll('tbody tr');
 
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                const cells = row.getElementsByTagName('td');
-                let found = false;
-
-                for (let j = 0; j < cells.length; j++) {
-                    const cell = cells[j];
-                    if (cell) {
-                        const text = cell.textContent || cell.innerText;
-                        if (text.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
+            rows.forEach(row => {
+                const text = row.textContent || row.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
                 }
-                row.style.display = found ? '' : 'none';
-            }
+            });
         }
     </script>
 }

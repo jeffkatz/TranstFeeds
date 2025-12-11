@@ -65,7 +65,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Agencies");
+                    b.ToTable("Agencies", (string)null);
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.Shape", b =>
@@ -101,7 +101,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("ShapeId");
 
-                    b.ToTable("Shapes");
+                    b.ToTable("Shapes", (string)null);
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.ShapesMaster", b =>
@@ -121,7 +121,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShapesMaster");
+                    b.ToTable("ShapesMaster", (string)null);
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.Stop", b =>
@@ -188,7 +188,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("ParentStationId");
 
-                    b.ToTable("Stops");
+                    b.ToTable("Stops", (string)null);
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.StopTime", b =>
@@ -243,7 +243,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("StopTimes");
+                    b.ToTable("StopTimes", (string)null);
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.TransitCalendar", b =>
@@ -299,7 +299,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransitCalendar");
+                    b.ToTable("TransitCalendar", (string)null);
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.TransitRoute", b =>
@@ -359,7 +359,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("AgencyId");
 
-                    b.ToTable("TransitRoutes");
+                    b.ToTable("TransitRoutes", (string)null);
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.Trip", b =>
@@ -420,7 +420,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("TransitRouteId");
 
-                    b.ToTable("Trips");
+                    b.ToTable("Trips", (string)null);
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.Shape", b =>

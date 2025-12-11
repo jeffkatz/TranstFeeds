@@ -1,43 +1,134 @@
 @model TransitFeeds.Models.TransitCalendar
 
 @{
-    ViewData["Title"] = "Service Details";
+    ViewData["Title"] = "Calendar Details";
+
+    // Data for Weekly Pattern Chart
+    var days = new[] { "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun" };
+    var active = new[] { 
+        Model.Monday ? 1 : 0, 
+        Model.Tuesday ? 1 : 0, 
+        Model.Wednesday ? 1 : 0, 
+        Model.Thursday ? 1 : 0, 
+        Model.Friday ? 1 : 0, 
+        Model.Saturday ? 1 : 0, 
+        Model.Sunday ? 1 : 0 
+    };
+    
+    var daysJson = System.Text.Json.JsonSerializer.Serialize(days);
+    var activeJson = System.Text.Json.JsonSerializer.Serialize(active);
+
+    // Calc total dates
+    var totalDays = (Model.EndDate - Model.StartDate).TotalDays;
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
+<div class="max-w-5xl mx-auto">
+    <!-- Header -->
+    <div class="mb-8 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+             <div class="h-16 w-16 rounded-2xl flex items-center justify-center text-xl font-bold bg-pink-50 text-pink-600 shadow-soft">
+                <i class="fas fa-calendar-alt"></i>
+            </div>
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 tracking-tight">@Model.GtfsServiceId</h1>
+                <p class="text-gray-500 mt-1">Service Schedule</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+                Back to List
+            </a>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-lg font-medium text-white shadow-sm hover:bg-blue-700 transition-colors">
+                Edit Calendar
+            </a>
+        </div>
     </div>
-    <div class="header-actions">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
-    </div>
-</div>
 
-<div class="container">
-    <div class="card">
-        <div class="card-body">
-            <dl class="row">
-                <dt class="col-sm-3">GTFS ID</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsServiceId)</dd>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Details Card -->
+        <div class="lg:col-span-1 bg-white rounded-2xl shadow-soft p-6 border border-gray-100 flex flex-col justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-100">Validity</h2>
+                <div class="space-y-6">
+                    <div>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">Start Date</span>
+                        <span class="text-lg font-mono font-medium text-gray-900">@Model.StartDate.ToShortDateString()</span>
+                    </div>
+                     <div>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">End Date</span>
+                        <span class="text-lg font-mono font-medium text-gray-900">@Model.EndDate.ToShortDateString()</span>
+                    </div>
+                     <div>
+                        <span class="text-xs text-gray-400 uppercase tracking-wider block mb-1">Total Duration</span>
+                        <span class="text-sm font-medium text-gray-600">@totalDays.ToString("N0") days</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-8 p-4 bg-gray-50 rounded-xl">
+                 <h3 class="text-sm font-semibold text-gray-700 mb-2">Active Days</h3>
+                 <div class="flex gap-1">
+                     @foreach(var (isActive, day) in active.Zip(days))
+                     {
+                         <div class="flex-1 flex flex-col items-center">
+                             <div class="w-2 h-2 rounded-full mb-1 @(isActive == 1 ? "bg-green-500" : "bg-gray-200")"></div>
+                             <span class="text-[10px] text-gray-400">@day.Substring(0,1)</span>
+                         </div>
+                     }
+                 </div>
+            </div>
+        </div>
 
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StartDate)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.StartDate)</dd>
-
-                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.EndDate)</dt>
-                <dd class="col-sm-9">@Html.DisplayFor(model => model.EndDate)</dd>
-
-                <dt class="col-sm-3">Days</dt>
-                <dd class="col-sm-9">
-                    <span class="badge @(Model.Monday ? "badge-primary" : "badge-secondary")">M</span>
-                    <span class="badge @(Model.Tuesday ? "badge-primary" : "badge-secondary")">T</span>
-                    <span class="badge @(Model.Wednesday ? "badge-primary" : "badge-secondary")">W</span>
-                    <span class="badge @(Model.Thursday ? "badge-primary" : "badge-secondary")">T</span>
-                    <span class="badge @(Model.Friday ? "badge-primary" : "badge-secondary")">F</span>
-                    <span class="badge @(Model.Saturday ? "badge-primary" : "badge-secondary")">S</span>
-                    <span class="badge @(Model.Sunday ? "badge-primary" : "badge-secondary")">S</span>
-                </dd>
-            </dl>
+        <!-- Visualization Card -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-soft p-6 border border-gray-100 flex flex-col">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Weekly Pattern</h2>
+            <div class="relative h-64 w-full flex justify-center">
+                <!-- Using a Radar Chart for specific day patterns -->
+                <canvas id="calendarChart"></canvas>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 text-center">Service availability shape across the week.</p>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const ctx = document.getElementById('calendarChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: @Html.Raw(daysJson),
+                datasets: [{
+                    label: 'Service Active',
+                    data: @Html.Raw(activeJson),
+                    backgroundColor: 'rgba(236, 72, 153, 0.2)', // Pink
+                    borderColor: 'rgba(236, 72, 153, 1)',
+                    pointBackgroundColor: 'rgba(236, 72, 153, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(236, 72, 153, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: false
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 1,
+                        ticks: {
+                            display: false,
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+}

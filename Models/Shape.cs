@@ -40,6 +40,6 @@ namespace TransitFeeds.Models
 
         // Navigation: reference to ShapesMaster
         [ForeignKey(nameof(ShapeId))]
-        public virtual ShapesMaster ShapesMaster { get; set; } = null!;
+        public virtual ShapesMaster? ShapesMaster { get; set; }
     }
 }

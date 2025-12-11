@@ -1,60 +1,88 @@
 ﻿@model IEnumerable<TransitFeeds.Models.TransitCalendar>
 
 @{
-    ViewData["Title"] = "Calendar";
+    ViewData["Title"] = "Services";
 }
 
-<div class="app-header">
-    <div class="header-title">
-        <h1>@ViewData["Title"]</h1>
-    </div>
-    <div class="header-actions">
-        <a asp-action="Create" class="btn btn-primary">
-            <span>+ New Service</span>
-        </a>
-    </div>
-</div>
-
-<div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="search-container" style="flex: 1; max-width: 400px;">
-            <input type="text" id="searchInput" class="form-control search-input" placeholder="Search services..." onkeyup="filterTable()">
+<div class="container mx-auto px-4 py-8">
+    
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 tracking-tight">Weather / Services</h1>
+            <p class="text-gray-500 mt-1">Manage service availability calendars (days of operation)</p>
+        </div>
+        <div>
+            <a asp-action="Create" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-sm">
+                <i class="fas fa-plus mr-2"></i> New Service
+            </a>
         </div>
     </div>
 
-    <div class="card">
-        <div class="table-responsive">
-            <table class="table" id="calendarTable">
-                <thead>
+    <!-- Search & Filters -->
+    <div class="bg-white rounded-t-xl border border-gray-200 p-4 border-b-0">
+        <div class="relative max-w-md w-full">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input type="text" id="searchInput" onkeyup="filterTable()" 
+                   class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out" 
+                   placeholder="Search service IDs...">
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="bg-white shadow-sm rounded-b-xl border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200" id="calendarTable">
+                <thead class="bg-gray-50">
                     <tr>
-                        <th>GTFS ID</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Days</th>
-                        <th style="text-align: right;">Actions</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service ID</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Validity Period</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Days of Operation</th>
+                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200">
                     @foreach (var item in Model)
                     {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.GtfsServiceId)</td>
-                            <td>@item.StartDate.ToShortDateString()</td>
-                            <td>@item.EndDate.ToShortDateString()</td>
-                            <td>
-                                <span class="badge @(item.Monday ? "badge-primary" : "badge-secondary")">M</span>
-                                <span class="badge @(item.Tuesday ? "badge-primary" : "badge-secondary")">T</span>
-                                <span class="badge @(item.Wednesday ? "badge-primary" : "badge-secondary")">W</span>
-                                <span class="badge @(item.Thursday ? "badge-primary" : "badge-secondary")">T</span>
-                                <span class="badge @(item.Friday ? "badge-primary" : "badge-secondary")">F</span>
-                                <span class="badge @(item.Saturday ? "badge-primary" : "badge-secondary")">S</span>
-                                <span class="badge @(item.Sunday ? "badge-primary" : "badge-secondary")">S</span>
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="bg-gray-100 text-gray-800 px-2.5 py-1 rounded font-mono text-sm font-semibold">@Html.DisplayFor(modelItem => item.GtfsServiceId)</span>
                             </td>
-                            <td style="text-align: right;">
-                                <div class="btn-group">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Details</a>
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-400 uppercase tracking-wide">Start</span>
+                                    <span class="font-medium">@item.StartDate.ToString("MMM dd, yyyy")</span>
+                                </div>
+                                <div class="border-l-2 border-gray-200 my-1 h-3 ml-1.5 "></div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs text-gray-400 uppercase tracking-wide">End</span>
+                                    <span class="font-medium">@item.EndDate.ToString("MMM dd, yyyy")</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex gap-1">
+                                    <span class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold @(item.Monday ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-300")">M</span>
+                                    <span class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold @(item.Tuesday ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-300")">T</span>
+                                    <span class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold @(item.Wednesday ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-300")">W</span>
+                                    <span class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold @(item.Thursday ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-300")">T</span>
+                                    <span class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold @(item.Friday ? "bg-indigo-100 text-indigo-700" : "bg-gray-100 text-gray-300")">F</span>
+                                    <span class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold @(item.Saturday ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-300")">S</span>
+                                    <span class="w-6 h-6 flex items-center justify-center rounded text-xs font-bold @(item.Sunday ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-300")">S</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 hover:bg-indigo-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="text-gray-600 hover:text-gray-900 bg-gray-50 hover:bg-gray-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-info"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 p-2 rounded-full w-8 h-8 flex items-center justify-center transition-colors">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -62,6 +90,14 @@
                 </tbody>
             </table>
         </div>
+        @if (!Model.Any())
+        {
+            <div class="text-center py-10">
+                <div class="text-gray-400 mb-2 text-4xl"><i class="fas fa-calendar-alt"></i></div>
+                <p class="text-gray-500">No services found.</p>
+                <a asp-action="Create" class="text-indigo-600 hover:text-indigo-800 font-medium text-sm mt-2 inline-block">Create the first service</a>
+            </div>
+        }
     </div>
 </div>
 
@@ -71,25 +107,16 @@
             const input = document.getElementById('searchInput');
             const filter = input.value.toLowerCase();
             const table = document.getElementById('calendarTable');
-            const rows = table.getElementsByTagName('tr');
+            const rows = table.querySelectorAll('tbody tr');
 
-            for (let i = 1; i < rows.length; i++) {
-                const row = rows[i];
-                const cells = row.getElementsByTagName('td');
-                let found = false;
-
-                for (let j = 0; j < cells.length; j++) {
-                    const cell = cells[j];
-                    if (cell) {
-                        const text = cell.textContent || cell.innerText;
-                        if (text.toLowerCase().indexOf(filter) > -1) {
-                            found = true;
-                            break;
-                        }
-                    }
+            rows.forEach(row => {
+                const text = row.textContent || row.innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
                 }
-                row.style.display = found ? '' : 'none';
-            }
+            });
         }
     </script>
 }

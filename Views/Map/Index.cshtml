@@ -2,179 +2,257 @@
     ViewData["Title"] = "Live Map";
 }
 
-<div class="relative h-[calc(100vh-8rem)] w-full rounded-xl overflow-hidden shadow-lg border border-gray-200 bg-gray-100">
-    <!-- Map Container -->
-    <div id="map" class="h-full w-full z-0"></div>
-
-    <!-- Floating Controls (Top Left) -->
-    <div class="absolute top-4 left-4 z-[1000] flex flex-col gap-2">
-        <div class="bg-white/90 backdrop-blur-sm p-2 rounded-lg shadow-md border border-gray-100">
-            <h1 class="text-sm font-bold text-gray-800 px-2 uppercase tracking-wide">Network Map</h1>
+<div class="flex h-[calc(100vh-3.5rem)] -m-4 mt-0">
+    <!-- Sidebar -->
+    <div class="w-80 bg-white border-r border-gray-200 flex flex-col z-20 shadow-xl">
+        <div class="p-4 border-b border-gray-200 bg-gray-50">
+            <h2 class="font-bold text-gray-800 text-lg flex items-center">
+                <i class="fas fa-bus-alt text-indigo-600 mr-2"></i> Route Explorer
+            </h2>
+            <input type="text" id="routeSearch" placeholder="Search routes..." 
+                   class="mt-3 w-full px-3 py-2 bg-white border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all">
         </div>
         
-        <div class="bg-white/90 backdrop-blur-sm p-1 rounded-lg shadow-md border border-gray-100 flex flex-col gap-1">
-            <button id="toggleStops" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-indigo-50 text-gray-700 hover:text-indigo-600 transition-colors text-sm font-medium">
-                <i class="fas fa-map-marker-alt w-4 text-center"></i>
-                <span>Stops</span>
-            </button>
-            <button id="toggleRoutes" class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-green-50 text-gray-700 hover:text-green-600 transition-colors text-sm font-medium">
-                <i class="fas fa-route w-4 text-center"></i>
-                <span>Routes</span>
-            </button>
+        <div id="routeList" class="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
+            <!-- Routes will be injected here -->
+            <div class="text-center text-gray-400 mt-10">
+                <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                <p class="text-xs">Loading routes...</p>
+            </div>
+        </div>
+
+        <div class="p-3 border-t border-gray-200 bg-gray-50 text-xs text-center text-gray-400">
+            Select a route to view its path
         </div>
     </div>
 
-    <!-- Floating Stats (Bottom Right) -->
-    <div class="absolute bottom-8 right-4 z-[1000]">
-        <div class="bg-white/90 backdrop-blur-sm px-4 py-3 rounded-lg shadow-md border border-gray-100 text-xs text-gray-600 flex gap-4">
+    <!-- Map Container -->
+    <div class="flex-1 relative bg-gray-100">
+        <div id="map" class="absolute inset-0 z-0"></div>
+
+        <!-- Floating Info -->
+        <div class="absolute bottom-6 right-6 z-[1000] bg-white/95 backdrop-blur shadow-lg rounded-lg border border-gray-100 px-4 py-2 text-xs font-medium text-gray-600 flex gap-4">
             <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-blue-600"></span>
-                <span id="stopCount">Loading stops...</span>
-            </div>
-            <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span id="routeCount">Loading routes...</span>
+                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                <span id="mapStatus">Ready</span>
             </div>
         </div>
-    </div>
-    
-    <!-- Fit Bounds Button (Bottom Right above stats) -->
-    <div class="absolute bottom-20 right-4 z-[1000]">
-        <button id="fitBounds" class="bg-white/90 backdrop-blur-sm w-10 h-10 rounded-lg shadow-md border border-gray-100 flex items-center justify-center text-gray-700 hover:text-indigo-600 hover:bg-white transition-all">
-            <i class="fas fa-expand"></i>
-        </button>
     </div>
 </div>
 
 @section Scripts {
-    <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-          crossorigin="" />
+    <!-- Leaflet & Clusters -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
 
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-            crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 
     <script>
-        // Initialize map with a clean, light tile layer (CartoDB Positron)
+        // --- Map Init ---
+        // Default to Phokeng/Rustenburg Area
         const map = L.map('map', {
-            zoomControl: false // We'll add it manually if needed, or rely on scroll/pinch
-        }).setView([-25.7479, 28.2293], 10);
+            zoomControl: false 
+        }).setView([-25.5780, 27.1630], 11);
 
-        L.control.zoom({
-            position: 'bottomright'
-        }).addTo(map);
+        L.control.zoom({ position: 'topright' }).addTo(map);
 
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
             subdomains: 'abcd',
             maxZoom: 20
         }).addTo(map);
 
-        // Layer groups
-        const stopsLayer = L.layerGroup().addTo(map);
-        const routesLayer = L.layerGroup().addTo(map);
+        // --- Layers ---
+        const stopCluster = L.markerClusterGroup({
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            maxClusterRadius: 50
+        });
+        map.addLayer(stopCluster);
 
-        let stopMarkers = [];
-        let routeLines = [];
+        const routeLayer = L.layerGroup().addTo(map);
+        
+        // --- State ---
+        let currentRoutes = [];
+        let activeRouteId = null;
 
-        // Fetch Data
-        Promise.all([
-            fetch('/Map/GetStops').then(r => r.json()),
-            fetch('/Map/GetShapes').then(r => r.json())
-        ]).then(([stops, shapes]) => {
-            
-            // Process Stops
-            stops.forEach(stop => {
-                const marker = L.circleMarker([stop.lat, stop.lon], {
-                    radius: 5,
-                    fillColor: '#3B82F6', // blue-500
-                    color: '#ffffff',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.9
-                });
+        // --- Core Logic ---
 
-                marker.bindPopup(`
-                    <div class="font-sans">
-                        <h4 class="font-bold text-gray-900 text-sm mb-1">${stop.name}</h4>
-                        <div class="text-xs text-gray-500 space-y-1">
-                            <p><span class="font-medium">ID:</span> ${stop.gtfsId}</p>
-                            <p class="font-mono bg-gray-50 p-1 rounded inline-block">${stop.lat.toFixed(5)}, ${stop.lon.toFixed(5)}</p>
+        // 1. Fetch Routes List
+        fetch('/Map/GetRouteList')
+            .then(res => res.json())
+            .then(routes => {
+                currentRoutes = routes;
+                renderRoutes(routes);
+            })
+            .catch(err => console.error(err));
+
+        // 2. Render Routes Sidebar
+        function renderRoutes(routes) {
+            const container = document.getElementById('routeList');
+            container.innerHTML = '';
+
+            if (routes.length === 0) {
+                container.innerHTML = '<div class="text-center p-4 text-gray-500 text-sm">No routes found</div>';
+                return;
+            }
+
+            routes.forEach(r => {
+                const el = document.createElement('div');
+                const color = r.color ? '#' + r.color : '#6366f1';
+                const textColor = r.textColor ? '#' + r.textColor : '#ffffff';
+                
+                el.className = 'route-item p-3 mb-1 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors border-l-4 border-transparent flex items-center justify-between group';
+                el.dataset.id = r.id;
+                el.innerHTML = `
+                    <div class="flex items-center overflow-hidden">
+                        <span class="w-10 h-6 flex-shrink-0 flex items-center justify-center rounded text-xs font-bold mr-3 shadow-sm text-shadow-sm" 
+                              style="background-color: ${color}; color: ${textColor};">
+                            ${r.shortName || '?'}
+                        </span>
+                        <div class="flex flex-col min-w-0">
+                            <span class="text-sm font-semibold text-gray-700 truncate group-hover:text-indigo-700 transition-colors">${r.longName || 'Unnamed Route'}</span>
                         </div>
                     </div>
-                `);
+                    <i class="fas fa-chevron-right text-xs text-gray-300 group-hover:text-indigo-400"></i>
+                `;
                 
-                stopsLayer.addLayer(marker);
-                stopMarkers.push(marker);
+                el.addEventListener('click', () => selectRoute(r.id, el));
+                container.appendChild(el);
             });
-            document.getElementById('stopCount').textContent = `${stops.length} Stops`;
+        }
 
-            // Process Routes
-            const groupedShapes = {};
-            shapes.forEach(point => {
-                if (!groupedShapes[point.shapeId]) groupedShapes[point.shapeId] = [];
-                groupedShapes[point.shapeId].push([point.lat, point.lon]);
+        // 3. Search Filter
+        document.getElementById('routeSearch').addEventListener('input', (e) => {
+            const val = e.target.value.toLowerCase();
+            const filtered = currentRoutes.filter(r => 
+                (r.shortName && r.shortName.toLowerCase().includes(val)) || 
+                (r.longName && r.longName.toLowerCase().includes(val))
+            );
+            renderRoutes(filtered);
+        });
+
+        // 4. Select Route Logic
+        function selectRoute(routeId, element) {
+            // UI Update
+            document.querySelectorAll('.route-item').forEach(el => {
+                el.classList.remove('bg-indigo-100', 'border-indigo-500');
+                el.classList.add('border-transparent');
             });
+            element.classList.add('bg-indigo-100', 'border-indigo-500');
+            element.classList.remove('border-transparent');
 
-            Object.entries(groupedShapes).forEach(([shapeId, coords]) => {
-                if (coords.length > 1) {
-                    const polyline = L.polyline(coords, {
-                        color: '#10B981', // emerald-500
-                        weight: 3,
-                        opacity: 0.8,
-                        lineCap: 'round',
-                        lineJoin: 'round'
+            // Load Shape
+            routeLayer.clearLayers();
+            document.getElementById('mapStatus').innerText = 'Loading route...';
+            
+            fetch(`/Map/GetRouteShapes?routeId=${routeId}`)
+                .then(res => res.json())
+                .then(shapesData => {
+                    if (shapesData.length === 0) {
+                        alert('No shape data available for this route.');
+                        document.getElementById('mapStatus').innerText = 'No shapes found';
+                        return;
+                    }
+
+                    // Group by ShapeID (routes might have multiple variations/directions)
+                    const shapesGrouped = {};
+                    shapesData.forEach(p => {
+                        if (!shapesGrouped[p.shapeId]) shapesGrouped[p.shapeId] = [];
+                        shapesGrouped[p.shapeId].push([p.lat, p.lon]); // Leaflet expects [lat, lon]
+                    });
+
+                    const bounds = L.latLngBounds();
+
+                    Object.values(shapesGrouped).forEach((coords, i) => {
+                        const polyline = L.polyline(coords, {
+                            color: i === 0 ? '#4f46e5' : '#818cf8', // Main path darker, alts lighter
+                            weight: 4,
+                            opacity: 0.8,
+                            lineCap: 'round'
+                        }).addTo(routeLayer);
+                        bounds.extend(polyline.getBounds());
+                    });
+
+                    map.fitBounds(bounds, { padding: [50, 50] });
+                    document.getElementById('mapStatus').innerText = 'Route loaded';
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('mapStatus').innerText = 'Error loading route';
+                });
+        }
+
+        // 5. Load Stops on Move
+        let loadTimeout;
+        map.on('moveend', () => {
+            clearTimeout(loadTimeout);
+            loadTimeout = setTimeout(loadStopsInBounds, 500); // Debounce
+        });
+
+        function loadStopsInBounds() {
+            if (map.getZoom() < 10) {
+                // Too zoomed out, don't load individual stops to save performance
+                stopCluster.clearLayers(); 
+                document.getElementById('mapStatus').innerText = 'Zoom in to see stops';
+                return;
+            }
+
+            const bounds = map.getBounds();
+            const minLat = bounds.getSouth();
+            const maxLat = bounds.getNorth();
+            const minLon = bounds.getWest();
+            const maxLon = bounds.getEast();
+
+            document.getElementById('mapStatus').innerText = 'Loading stops...';
+
+            fetch(`/Map/GetStopsInBounds?minLat=${minLat}&maxLat=${maxLat}&minLon=${minLon}&maxLon=${maxLon}`)
+                .then(res => res.json())
+                .then(stops => {
+                    stopCluster.clearLayers(); // For simplicity, we refresh. 
+                    // In a super-optimized app, we'd diff check, but ClusterGroup handles additions well.
+                    // Actually clearing everything causes flicker. 
+                    // Better approach: clear and re-add is fine for 100-500 stops in view.
+                    
+                    const markers = stops.map(s => {
+                        const m = L.circleMarker([s.lat, s.lon], {
+                            radius: 6,
+                            fillColor: '#ffffff',
+                            color: '#3B82F6',
+                            weight: 2,
+                            fillOpacity: 1
+                        });
+                        m.bindPopup(`<b>${s.name}</b><br><span class="text-xs text-gray-500">${s.gtfsId}</span>`);
+                        return m;
                     });
                     
-                    polyline.bindPopup(`
-                        <div class="font-sans">
-                            <h4 class="font-bold text-gray-900 text-sm">Route Shape</h4>
-                            <p class="text-xs text-gray-500">ID: ${shapeId}</p>
-                        </div>
-                    `);
-
-                    routesLayer.addLayer(polyline);
-                    routeLines.push(polyline);
-                }
-            });
-            document.getElementById('routeCount').textContent = `${Object.keys(groupedShapes).length} Routes`;
-
-            // Initial Fit
-            fitMapToMarkers();
-
-        }).catch(err => console.error('Error loading map data:', err));
-
-        // Controls
-        document.getElementById('toggleStops').addEventListener('click', function() {
-            if (map.hasLayer(stopsLayer)) {
-                map.removeLayer(stopsLayer);
-                this.classList.add('opacity-50');
-            } else {
-                map.addLayer(stopsLayer);
-                this.classList.remove('opacity-50');
-            }
-        });
-
-        document.getElementById('toggleRoutes').addEventListener('click', function() {
-            if (map.hasLayer(routesLayer)) {
-                map.removeLayer(routesLayer);
-                this.classList.add('opacity-50');
-            } else {
-                map.addLayer(routesLayer);
-                this.classList.remove('opacity-50');
-            }
-        });
-
-        document.getElementById('fitBounds').addEventListener('click', fitMapToMarkers);
-
-        function fitMapToMarkers() {
-            if (stopMarkers.length > 0) {
-                const group = new L.featureGroup(stopMarkers);
-                map.fitBounds(group.getBounds().pad(0.1));
-            }
+                    stopCluster.addLayers(markers);
+                    document.getElementById('mapStatus').innerText = `${stops.length} stops visible`;
+                })
+                .catch(err => console.error(err));
         }
+        
+        // Initial load
+        loadStopsInBounds();
+
     </script>
+    
+    <style>
+        /* Custom scrollbar for sidebar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
 }
