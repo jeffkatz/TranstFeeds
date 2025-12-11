@@ -1,0 +1,61 @@
+@model TransitFeeds.Models.Stop
+
+@{
+    ViewData["Title"] = "Stop Details";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">GTFS ID</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsStopId)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopCode)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopCode)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopName)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopDesc)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopDesc)</dd>
+
+                <dt class="col-sm-3">Coordinates</dt>
+                <dd class="col-sm-9">@Model.StopLat, @Model.StopLon</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ZoneId)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ZoneId)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopUrl)</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.StopUrl))
+                    {
+                        <a href="@Model.StopUrl" target="_blank">@Model.StopUrl</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.LocationType)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.LocationType)</dd>
+
+                <dt class="col-sm-3">Parent Station</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ParentStation.StopName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopTimezone)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopTimezone)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.WheelchairBoarding)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WheelchairBoarding)</dd>
+            </dl>
+        </div>
+    </div>
+</div>

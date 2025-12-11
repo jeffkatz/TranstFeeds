@@ -1,0 +1,46 @@
+@model TransitFeeds.Models.Agency
+
+@{
+    ViewData["Title"] = "Agency Details";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">GTFS ID</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsAgencyId)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyName)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyUrl)</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.AgencyUrl))
+                    {
+                        <a href="@Model.AgencyUrl" target="_blank">@Model.AgencyUrl</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyTimezone)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyTimezone)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyPhone)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyPhone)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.AgencyLang)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.AgencyLang)</dd>
+            </dl>
+        </div>
+    </div>
+</div>

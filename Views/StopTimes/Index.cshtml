@@ -1,0 +1,154 @@
+﻿@model IEnumerable<TransitFeeds.Models.StopTime>
+
+@{
+    ViewData["Title"] = "Stop Times";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-primary">
+            <span>+ New Stop Time</span>
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="search-container" style="flex: 1; max-width: 400px;">
+            <input type="text" id="searchInput" class="form-control search-input" placeholder="Search stop times..." onkeyup="filterTable()">
+        </div>
+        <div id="bulkActions" style="display: none;">
+            <button type="button" class="btn btn-danger" onclick="submitBulkDelete()">
+                Delete Selected (<span id="selectedCount">0</span>)
+            </button>
+        </div>
+    </div>
+
+    <form id="bulkDeleteForm" asp-action="BulkDelete" method="post">
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table" id="stopTimesTable">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px;">
+                                <input type="checkbox" id="selectAll" class="form-check-input" onchange="toggleAll(this)">
+                            </th>
+                            <th>Trip</th>
+                            <th>Stop</th>
+                            <th>Sequence</th>
+                            <th>Arrival</th>
+                            <th>Departure</th>
+                            <th style="text-align: right;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="ids" value="@item.Id" class="form-check-input item-checkbox" onchange="updateBulkActionState()">
+                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.Trip.GtfsTripId)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Stop.StopName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.StopSequence)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ArrivalTime)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DepartureTime)</td>
+                                <td style="text-align: right;">
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Details</a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        function filterTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('stopTimesTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 1; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        const text = cell.textContent || cell.innerText;
+                        if (text.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                row.style.display = found ? '' : 'none';
+            }
+        }
+
+        function toggleAll(source) {
+            const checkboxes = document.getElementsByClassName('item-checkbox');
+            for (let i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].closest('tr').style.display !== 'none') {
+                    checkboxes[i].checked = source.checked;
+                }
+            }
+            updateBulkActionState();
+        }
+
+        function updateBulkActionState() {
+            const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+            const count = checkboxes.length;
+            const bulkActions = document.getElementById('bulkActions');
+            const selectedCount = document.getElementById('selectedCount');
+            
+            selectedCount.innerText = count;
+            
+            if (count > 0) {
+                bulkActions.style.display = 'block';
+            } else {
+                bulkActions.style.display = 'none';
+            }
+
+            const allCheckboxes = document.getElementsByClassName('item-checkbox');
+            const selectAll = document.getElementById('selectAll');
+            if (count === allCheckboxes.length && count > 0) {
+                selectAll.checked = true;
+                selectAll.indeterminate = false;
+            } else if (count > 0) {
+                selectAll.checked = false;
+                selectAll.indeterminate = true;
+            } else {
+                selectAll.checked = false;
+                selectAll.indeterminate = false;
+            }
+        }
+
+        function submitBulkDelete() {
+            if (confirm('Are you sure you want to delete the selected stop times?')) {
+                document.getElementById('bulkDeleteForm').submit();
+            }
+        }
+    </script>
+}

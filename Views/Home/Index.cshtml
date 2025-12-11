@@ -1,0 +1,311 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    int agenciesCount = ViewBag.AgenciesCount ?? 0;
+    int routesCount = ViewBag.RoutesCount ?? 0;
+    int stopsCount = ViewBag.StopsCount ?? 0;
+    int tripsCount = ViewBag.TripsCount ?? 0;
+    int calendarCount = ViewBag.CalendarCount ?? 0;
+    int stopTimesCount = ViewBag.StopTimesCount ?? 0;
+}
+
+<!-- Dashboard Header -->
+<div class="app-header" style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: white; padding: 2rem; margin: -2rem -2rem 2rem -2rem; border-radius: 0 0 1rem 1rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+            <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; color: white;">
+                <span style="margin-right: 0.5rem;">📊</span>
+                Transit Management Dashboard
+            </h1>
+            <p style="color: rgba(255,255,255,0.9); margin: 0;">Welcome to your comprehensive transit data management system</p>
+        </div>
+        <div style="font-size: 3rem; opacity: 0.2;">🚌</div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Statistics Cards -->
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary);">
+            System Overview
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <!-- Agencies Card -->
+            <div class="card" style="border-left: 4px solid #3b82f6;">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">Agencies</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: #3b82f6;">@agenciesCount</div>
+                        </div>
+                        <div style="width: 48px; height: 48px; background: rgba(59, 130, 246, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            🏢
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a asp-controller="Agencies" asp-action="Index" class="btn btn-sm btn-primary" style="width: 100%;">View All</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Routes Card -->
+            <div class="card" style="border-left: 4px solid #10b981;">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">Routes</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: #10b981;">@routesCount</div>
+                        </div>
+                        <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            🛣️
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a asp-controller="TransitRoutes" asp-action="Index" class="btn btn-sm" style="width: 100%; background: #10b981; color: white;">View All</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stops Card -->
+            <div class="card" style="border-left: 4px solid #f59e0b;">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">Stops</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: #f59e0b;">@stopsCount</div>
+                        </div>
+                        <div style="width: 48px; height: 48px; background: rgba(245, 158, 11, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            📍
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a asp-controller="Stops" asp-action="Index" class="btn btn-sm" style="width: 100%; background: #f59e0b; color: white;">View All</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trips Card -->
+            <div class="card" style="border-left: 4px solid #8b5cf6;">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">Trips</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: #8b5cf6;">@tripsCount</div>
+                        </div>
+                        <div style="width: 48px; height: 48px; background: rgba(139, 92, 246, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            🚌
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a asp-controller="Trips" asp-action="Index" class="btn btn-sm" style="width: 100%; background: #8b5cf6; color: white;">View All</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calendar Card -->
+            <div class="card" style="border-left: 4px solid #ec4899;">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">Services</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: #ec4899;">@calendarCount</div>
+                        </div>
+                        <div style="width: 48px; height: 48px; background: rgba(236, 72, 153, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            📅
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a asp-controller="TransitCalendar" asp-action="Index" class="btn btn-sm" style="width: 100%; background: #ec4899; color: white;">View All</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stop Times Card -->
+            <div class="card" style="border-left: 4px solid #06b6d4;">
+                <div class="card-body" style="padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <div style="font-size: 0.875rem; color: var(--color-text-muted); margin-bottom: 0.5rem;">Stop Times</div>
+                            <div style="font-size: 2rem; font-weight: 700; color: #06b6d4;">@stopTimesCount</div>
+                        </div>
+                        <div style="width: 48px; height: 48px; background: rgba(6, 182, 212, 0.1); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                            ⏰
+                        </div>
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a asp-controller="StopTimes" asp-action="Index" class="btn btn-sm" style="width: 100%; background: #06b6d4; color: white;">View All</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary);">
+            Quick Actions
+        </h2>
+        <div class="card">
+            <div class="card-body" style="padding: 1.5rem;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <a asp-controller="Agencies" asp-action="Create" class="btn btn-primary" style="padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">➕</span>
+                        <span>New Agency</span>
+                    </a>
+                    <a asp-controller="TransitRoutes" asp-action="Create" class="btn btn-primary" style="padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">➕</span>
+                        <span>New Route</span>
+                    </a>
+                    <a asp-controller="Stops" asp-action="Create" class="btn btn-primary" style="padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">➕</span>
+                        <span>New Stop</span>
+                    </a>
+                    <a asp-controller="Trips" asp-action="Create" class="btn btn-primary" style="padding: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">➕</span>
+                        <span>New Trip</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Modules -->
+    <div style="margin-bottom: 2rem;">
+        <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary);">
+            Management Modules
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <!-- Transit Data Module -->
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%);">
+                    <h3 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.5rem;">🚌</span>
+                        <span>Transit Data</span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p style="color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 1rem;">
+                        Manage core transit information including agencies, routes, and stops.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a asp-controller="Agencies" asp-action="Index" class="btn btn-sm btn-secondary" style="justify-content: start;">
+                            <span style="margin-right: 0.5rem;">🏢</span>
+                            Agencies
+                        </a>
+                        <a asp-controller="TransitRoutes" asp-action="Index" class="btn btn-sm btn-secondary" style="justify-content: start;">
+                            <span style="margin-right: 0.5rem;">🛣️</span>
+                            Routes
+                        </a>
+                        <a asp-controller="Stops" asp-action="Index" class="btn btn-sm btn-secondary" style="justify-content: start;">
+                            <span style="margin-right: 0.5rem;">📍</span>
+                            Stops
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scheduling Module -->
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);">
+                    <h3 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.5rem;">📅</span>
+                        <span>Scheduling</span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p style="color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 1rem;">
+                        Configure service schedules, calendars, and timing information.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a asp-controller="Trips" asp-action="Index" class="btn btn-sm btn-secondary" style="justify-content: start;">
+                            <span style="margin-right: 0.5rem;">🚌</span>
+                            Trips
+                        </a>
+                        <a asp-controller="TransitCalendar" asp-action="Index" class="btn btn-sm btn-secondary" style="justify-content: start;">
+                            <span style="margin-right: 0.5rem;">📅</span>
+                            Calendar
+                        </a>
+                        <a asp-controller="StopTimes" asp-action="Index" class="btn btn-sm btn-secondary" style="justify-content: start;">
+                            <span style="margin-right: 0.5rem;">⏰</span>
+                            Stop Times
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Geographic Data Module -->
+            <div class="card">
+                <div class="card-header" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%);">
+                    <h3 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.5rem;">🗺️</span>
+                        <span>Geographic Data</span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p style="color: var(--color-text-muted); font-size: 0.875rem; margin-bottom: 1rem;">
+                        Define route shapes and geographic paths for visualization.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <a asp-controller="ShapesMaster" asp-action="Index" class="btn btn-sm btn-secondary" style="justify-content: start;">
+                            <span style="margin-right: 0.5rem;">📐</span>
+                            Shapes Master
+                        </a>
+                        <a asp-controller="Shapes" asp-action="Index" class="btn btn-sm btn-secondary" style="justify-content: start;">
+                            <span style="margin-right: 0.5rem;">📍</span>
+                            Shape Points
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="card" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.02) 0%, rgba(15, 23, 42, 0.05) 100%);">
+        <div class="card-body" style="padding: 1.5rem;">
+            <h3 style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary);">
+                System Information
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.875rem;">
+                <div>
+                    <div style="color: var(--color-text-muted);">Application</div>
+                    <div style="font-weight: 600; color: var(--color-text-primary);">TransitFeeds Management</div>
+                </div>
+                <div>
+                    <div style="color: var(--color-text-muted);">Version</div>
+                    <div style="font-weight: 600; color: var(--color-text-primary);">1.0.0</div>
+                </div>
+                <div>
+                    <div style="color: var(--color-text-muted);">Total Records</div>
+                    <div style="font-weight: 600; color: var(--color-text-primary);">@(agenciesCount + routesCount + stopsCount + tripsCount + calendarCount + stopTimesCount)</div>
+                </div>
+                <div>
+                    <div style="color: var(--color-text-muted);">Status</div>
+                    <div style="font-weight: 600; color: #10b981;">
+                        <span style="display: inline-block; width: 8px; height: 8px; background: #10b981; border-radius: 50%; margin-right: 0.5rem;"></span>
+                        Active
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn {
+        transition: all 0.2s ease;
+    }
+    
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+</style>

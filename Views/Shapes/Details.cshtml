@@ -1,0 +1,38 @@
+@model TransitFeeds.Models.Shape
+
+@{
+    ViewData["Title"] = "Point Details";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Shape ID</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ShapesMaster.GtfsShapeId)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ShapePtSequence)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ShapePtSequence)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ShapePtLat)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ShapePtLat)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ShapePtLon)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ShapePtLon)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ShapeDistTraveled)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ShapeDistTraveled)</dd>
+            </dl>
+        </div>
+    </div>
+</div>

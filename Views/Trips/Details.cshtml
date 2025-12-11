@@ -1,0 +1,59 @@
+﻿@model TransitFeeds.Models.Trip
+
+@{
+    ViewData["Title"] = "Trip Details";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">GTFS ID</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsTripId)</dd>
+
+                <dt class="col-sm-3">Route</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.TransitRoute.RouteShortName)</dd>
+
+                <dt class="col-sm-3">Service</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.TransitCalendar.GtfsServiceId)</dd>
+
+                <dt class="col-sm-3">Shape</dt>
+                <dd class="col-sm-9">
+                    @if (Model.ShapesMaster != null)
+                    {
+                        @Html.DisplayFor(model => model.ShapesMaster.GtfsShapeId)
+                    }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.TripHeadsign)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.TripHeadsign)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.TripShortName)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.TripShortName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DirectionId)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.DirectionId)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.WheelchairAccessible)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.WheelchairAccessible)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.BlockId)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.BlockId)</dd>
+            </dl>
+        </div>
+    </div>
+</div>

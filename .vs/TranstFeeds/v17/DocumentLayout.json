@@ -1,0 +1,308 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\controllers\\shapesmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:controllers\\shapesmastercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\views\\shapes\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:views\\shapes\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\controllers\\shapescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:controllers\\shapescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\models\\stoptime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:models\\stoptime.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\models\\shape.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:models\\shape.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\controllers\\importcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:controllers\\importcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\models\\stop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:models\\stop.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\controllers\\agenciescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:controllers\\agenciescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\models\\transitroute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:models\\transitroute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\models\\agency.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:models\\agency.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\views\\agencies\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:views\\agencies\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|c:\\users\\user\\documents\\sandbox\\transtfeeds\\models\\trip.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{04FE1151-BD11-4D56-A28B-17FEC39D2763}|TranstFeeds.csproj|solutionrelative:models\\trip.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ShapesMasterController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\ShapesMasterController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ShapesMasterController.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\ShapesMasterController.cs",
+              "RelativeToolTip": "Controllers\\ShapesMasterController.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAkwCMAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T11:17:41.755Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ShapesController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\ShapesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ShapesController.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\ShapesController.cs",
+              "RelativeToolTip": "Controllers\\ShapesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-26T11:16:27.467Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Microsoft.Common.CurrentVersion.targets",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ViewState": "AgIAAAgVAAAAAAAAAAAlwBEVAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2025-11-26T11:12:05.993Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Views\\Shapes\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shapes\\Create.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Views\\Shapes\\Create.cshtml",
+              "RelativeToolTip": "Views\\Shapes\\Create.cshtml",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAlwDgAAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-26T07:24:23.29Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ImportController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\ImportController.cs",
+              "RelativeDocumentMoniker": "Controllers\\ImportController.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\ImportController.cs",
+              "RelativeToolTip": "Controllers\\ImportController.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAASwDMAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-23T16:26:22.074Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-11-23T15:52:47.304Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "_ViewImports.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Views\\_ViewImports.cshtml",
+              "RelativeDocumentMoniker": "Views\\_ViewImports.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Views\\_ViewImports.cshtml",
+              "RelativeToolTip": "Views\\_ViewImports.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-23T14:49:48.416Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "StopTime.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\StopTime.cs",
+              "RelativeDocumentMoniker": "Models\\StopTime.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\StopTime.cs",
+              "RelativeToolTip": "Models\\StopTime.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAwAsAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-23T12:15:04.758Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Stop.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\Stop.cs",
+              "RelativeDocumentMoniker": "Models\\Stop.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\Stop.cs",
+              "RelativeToolTip": "Models\\Stop.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-23T12:14:57.747Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-23T09:56:26.256Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAIQAAAAAAAAAAAAkwIoAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-11-23T09:25:06.996Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Shape.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\Shape.cs",
+              "RelativeDocumentMoniker": "Models\\Shape.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\Shape.cs",
+              "RelativeToolTip": "Models\\Shape.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAkAAAA9AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T17:47:05.098Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "AgenciesController.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\AgenciesController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AgenciesController.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Controllers\\AgenciesController.cs",
+              "RelativeToolTip": "Controllers\\AgenciesController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T17:49:12.869Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T17:41:37.554Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Views\\Agencies\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Agencies\\Index.cshtml",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Views\\Agencies\\Index.cshtml",
+              "RelativeToolTip": "Views\\Agencies\\Index.cshtml",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAAAAYAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-30T17:41:23.268Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "Agency.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\Agency.cs",
+              "RelativeDocumentMoniker": "Models\\Agency.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\Agency.cs",
+              "RelativeToolTip": "Models\\Agency.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAQwCsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T17:38:30.391Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "TransitRoute.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\TransitRoute.cs",
+              "RelativeDocumentMoniker": "Models\\TransitRoute.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\TransitRoute.cs",
+              "RelativeToolTip": "Models\\TransitRoute.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAIwBEAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T17:34:03.004Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "Trip.cs",
+              "DocumentMoniker": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\Trip.cs",
+              "RelativeDocumentMoniker": "Models\\Trip.cs",
+              "ToolTip": "C:\\Users\\User\\Documents\\SandBox\\TranstFeeds\\Models\\Trip.cs",
+              "RelativeToolTip": "Models\\Trip.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-30T17:33:20.186Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

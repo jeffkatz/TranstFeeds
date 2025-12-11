@@ -1,0 +1,229 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = TranstFeeds
+build_property.RootNamespace = TranstFeeds
+build_property.ProjectDir = C:\Users\User\Documents\SandBox\TranstFeeds\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\User\Documents\SandBox\TranstFeeds
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Agencies/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWdlbmNpZXNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Agencies/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWdlbmNpZXNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Agencies/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWdlbmNpZXNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Agencies/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWdlbmNpZXNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Agencies/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWdlbmNpZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Documentation/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRG9jdW1lbnRhdGlvblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Import/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wb3J0XEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Map/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFwXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/ShapesMaster/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzTWFzdGVyXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/ShapesMaster/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzTWFzdGVyXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/ShapesMaster/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzTWFzdGVyXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/ShapesMaster/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzTWFzdGVyXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/ShapesMaster/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzTWFzdGVyXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Shapes/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Shapes/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Shapes/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Shapes/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Shapes/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcGVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Stops/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcHNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Stops/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcHNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Stops/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcHNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Stops/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcHNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Stops/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/StopTimes/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcFRpbWVzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/StopTimes/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcFRpbWVzXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/StopTimes/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcFRpbWVzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/StopTimes/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcFRpbWVzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/StopTimes/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvcFRpbWVzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitCalendar/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdENhbGVuZGFyXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitCalendar/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdENhbGVuZGFyXERlbGV0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitCalendar/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdENhbGVuZGFyXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitCalendar/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdENhbGVuZGFyXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitCalendar/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdENhbGVuZGFyXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitRoutes/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdFJvdXRlc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitRoutes/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdFJvdXRlc1xEZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitRoutes/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdFJvdXRlc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitRoutes/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdFJvdXRlc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/TransitRoutes/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJhbnNpdFJvdXRlc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Trips/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcHNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Trips/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcHNcRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Trips/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcHNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Trips/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcHNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Trips/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVHJpcHNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/User/Documents/SandBox/TranstFeeds/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-pu78x1kf0x

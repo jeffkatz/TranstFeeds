@@ -1,0 +1,109 @@
+﻿@model IEnumerable<TransitFeeds.Models.Agency>
+
+@{
+    ViewData["Title"] = "Agencies";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-primary">
+            <span>+ New Agency</span>
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Search & Filter -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="search-container" style="flex: 1; max-width: 400px;">
+            <input type="text" id="searchInput" class="form-control search-input" placeholder="Search agencies..." onkeyup="filterTable()">
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table" id="agenciesTable">
+                <thead>
+                    <tr>
+                        <th>GTFS ID</th>
+                        <th>Name</th>
+                        <th>URL</th>
+                        <th>Timezone</th>
+                        <th>Phone</th>
+                        <th>Language</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.GtfsAgencyId)</td>
+                            <td>
+                                <div style="font-weight: 500;">@Html.DisplayFor(modelItem => item.AgencyName)</div>
+                            </td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.AgencyUrl))
+                                {
+                                    <a href="@item.AgencyUrl" target="_blank">Link</a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">-</span>
+                                }
+                            </td>
+                            <td>@Html.DisplayFor(modelItem => item.AgencyTimezone)</td>
+                            <td>@Html.DisplayFor(modelItem => item.AgencyPhone)</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.AgencyLang))
+                                {
+                                    <span class="badge badge-secondary">@item.AgencyLang</span>
+                                }
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="btn-group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('agenciesTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        const text = cell.textContent || cell.innerText;
+                        if (text.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                row.style.display = found ? '' : 'none';
+            }
+        }
+    </script>
+}

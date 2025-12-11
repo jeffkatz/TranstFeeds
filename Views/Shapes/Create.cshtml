@@ -1,0 +1,58 @@
+@model TransitFeeds.Models.Shape
+
+@{
+    ViewData["Title"] = "Create Point";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="Create" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="ShapeId" class="control-label"></label>
+                    <select asp-for="ShapeId" class ="form-control" asp-items="@((SelectList)ViewData["ShapeId"])">
+                        <option value="">-- Select a Shape --</option>
+                    </select>
+                    <span asp-validation-for="ShapeId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ShapePtSequence" class="control-label"></label>
+                    <input asp-for="ShapePtSequence" class="form-control" />
+                    <span asp-validation-for="ShapePtSequence" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ShapePtLat" class="control-label"></label>
+                    <input asp-for="ShapePtLat" class="form-control" type="number" step="any" />
+                    <span asp-validation-for="ShapePtLat" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ShapePtLon" class="control-label"></label>
+                    <input asp-for="ShapePtLon" class="form-control" type="number" step="any" />
+                    <span asp-validation-for="ShapePtLon" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ShapeDistTraveled" class="control-label"></label>
+                    <input asp-for="ShapeDistTraveled" class="form-control" type="number" step="any" />
+                    <span asp-validation-for="ShapeDistTraveled" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Create" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

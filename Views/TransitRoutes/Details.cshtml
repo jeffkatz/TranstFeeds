@@ -1,0 +1,63 @@
+@model TransitFeeds.Models.TransitRoute
+
+@{
+    ViewData["Title"] = "Route Details";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">GTFS ID</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsRouteId)</dd>
+
+                <dt class="col-sm-3">Agency</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Agency.AgencyName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteShortName)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.RouteShortName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteLongName)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.RouteLongName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteType)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.RouteType)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteTextColor)</dt>
+                <dd class="col-sm-9">
+                    <span style="background-color: #@Model.RouteTextColor; padding: 2px 5px; border: 1px solid #ccc;">
+                        #@Model.RouteTextColor
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteColor)</dt>
+                <dd class="col-sm-9">
+                    <span style="background-color: #@Model.RouteColor; padding: 2px 5px; border: 1px solid #ccc; color: white;">
+                        #@Model.RouteColor
+                    </span>
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteUrl)</dt>
+                <dd class="col-sm-9">
+                    @if (!string.IsNullOrEmpty(Model.RouteUrl))
+                    {
+                        <a href="@Model.RouteUrl" target="_blank">@Model.RouteUrl</a>
+                    }
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RouteDesc)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.RouteDesc)</dd>
+            </dl>
+        </div>
+    </div>
+</div>

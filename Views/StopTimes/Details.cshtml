@@ -1,0 +1,50 @@
+@model TransitFeeds.Models.StopTime
+
+@{
+    ViewData["Title"] = "Stop Time Details";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Trip</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Trip.GtfsTripId)</dd>
+
+                <dt class="col-sm-3">Stop</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Stop.StopName)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopSequence)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopSequence)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ArrivalTime)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ArrivalTime)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DepartureTime)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.DepartureTime)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.StopHeadsign)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.StopHeadsign)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.PickupType)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.PickupType)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.DropOffType)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.DropOffType)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ShapeDistTraveled)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.ShapeDistTraveled)</dd>
+            </dl>
+        </div>
+    </div>
+</div>

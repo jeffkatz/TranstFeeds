@@ -1,0 +1,81 @@
+﻿@model IEnumerable<TransitFeeds.Models.ShapesMaster>
+
+@{
+    ViewData["Title"] = "Shapes";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-primary">
+            <span>+ New Shape</span>
+        </a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="search-container" style="flex: 1; max-width: 400px;">
+            <input type="text" id="searchInput" class="form-control search-input" placeholder="Search shapes..." onkeyup="filterTable()">
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table" id="shapesTable">
+                <thead>
+                    <tr>
+                        <th>GTFS ID</th>
+                        <th style="text-align: right;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.GtfsShapeId)</td>
+                            <td style="text-align: right;">
+                                <div class="btn-group">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Edit</a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-secondary">Details</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function filterTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById('shapesTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+
+                for (let j = 0; j < cells.length; j++) {
+                    const cell = cells[j];
+                    if (cell) {
+                        const text = cell.textContent || cell.innerText;
+                        if (text.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                row.style.display = found ? '' : 'none';
+            }
+        }
+    </script>
+}

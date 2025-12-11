@@ -1,0 +1,73 @@
+@{
+    ViewData["Title"] = "Documentation";
+}
+<h1 class="text-2xl font-bold mb-6">TransitFeeds Documentation</h1>
+
+<div class="prose max-w-4xl">
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold">Overview</h2>
+        <p>
+            TransitFeeds is a lightweight ASP.NET Core MVC application that stores GTFS (General Transit Feed Specification) data in a relational database. It provides CRUD interfaces for agencies, routes, stops, trips, and a dedicated import wizard that can ingest the standard GTFS text files (stops.txt, routes.txt, trips.txt, etc.).
+        </p>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold">Import Feature</h2>
+        <p>The import UI lives under <code>/Import</code> and consists of three independent upload forms:</p>
+        <ul>
+            <li><strong>Stops</strong> – <code>stops.txt</code> (or <code>.csv</code>)</li>
+            <li><strong>Routes</strong> – <code>routes.txt</code></li>
+            <li><strong>Trips</strong> – <code>trips.txt</code></li>
+        </ul>
+        <p>Each form accepts a file, parses it line‑by‑line and bulk‑inserts the records into the database.</p>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold">File Format Details</h2>
+        <h3 class="text-lg font-medium mt-4">stops.txt</h3>
+        <pre class="bg-gray-100 p-2 rounded"><code>gtfs_stop_id,stop_name,stop_lat,stop_lon,location_type
+RST-CBD-01,Rustenburg CBD Taxi Rank,-25.6672,27.2424,0
+...</code></pre>
+        <p>Only the first five columns are required for the import. Missing optional columns are ignored.</p>
+        <h3 class="text-lg font-medium mt-4">routes.txt</h3>
+        <pre class="bg-gray-100 p-2 rounded"><code>gtfs_route_id,agency_id,route_short_name,route_long_name,route_type,route_color,route_text_color
+RLM-R1,1,R1,Rustenburg CBD - Tlhabane,3,0066CC,FFFFFF
+...</code></pre>
+        <p>The <code>agency_id</code> must match an existing <code>gtfs_agency_id</code> in the <code>Agencies</code> table.</p>
+        <h3 class="text-lg font-medium mt-4">trips.txt</h3>
+        <pre class="bg-gray-100 p-2 rounded"><code>route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,block_id,shape_id,wheelchair_accessible
+RLM-R1,WEEKDAY,R1-WD-01,Tlhabane,,0,,37896054,
+...</code></pre>
+        <p>The <code>route_id</code> and <code>service_id</code> must reference existing <code>TransitRoutes</code> and <code>TransitCalendar</code> records.</p>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold">How to Use the Import UI</h2>
+        <ol class="list-decimal list-inside">
+            <li>Navigate to <strong>Import GTFS Data</strong> via the sidebar.</li>
+            <li>Choose the appropriate file for each section and click the <em>Upload</em> button.</li>
+            <li>After a successful upload you will see a plain‑text response such as <code>Uploaded 13 stops.</code>.</li>
+            <li>If a row cannot be linked (e.g., missing agency), it is silently skipped – check the console logs for details.</li>
+        </ol>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold">Technical Details</h2>
+        <ul>
+            <li>All uploads are processed asynchronously with <code>await _context.SaveChangesAsync()</code>.</li>
+            <li>Parsing uses <code>StreamReader</code> and <code>String.Split(',')</code> – CSV quoting is not supported (GTFS files are simple comma‑separated).</li>
+            <li>Numeric fields are parsed with <code>int.TryParse</code> / <code>decimal.TryParse</code> and default to <code>0</code> when invalid.</li>
+            <li>Navigation properties (e.g., <code>AgencyId</code>) are resolved via LINQ look‑ups before insertion.</li>
+        </ul>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-xl font-semibold">Future Enhancements</h2>
+        <ul>
+            <li>Support for full GTFS zip packages (multiple files in one upload).</li>
+            <li>Validation feedback displayed in the UI instead of console logs.</li>
+            <li>Progress bar for large files.</li>
+            <li>CSV quoting & escape handling.</li>
+        </ul>
+    </section>
+</div>

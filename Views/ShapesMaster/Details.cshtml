@@ -1,0 +1,56 @@
+@model TransitFeeds.Models.ShapesMaster
+
+@{
+    ViewData["Title"] = "Shape Details";
+}
+
+<div class="app-header">
+    <div class="header-title">
+        <h1>@ViewData["Title"]</h1>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">GTFS ID</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.GtfsShapeId)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <!-- Related Points -->
+    <div class="card mt-4">
+        <div class="card-header">
+            <h3 class="card-title">Shape Points</h3>
+        </div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sequence</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Distance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var point in Model.Shapes.OrderBy(s => s.ShapePtSequence))
+                    {
+                        <tr>
+                            <td>@point.ShapePtSequence</td>
+                            <td>@point.ShapePtLat</td>
+                            <td>@point.ShapePtLon</td>
+                            <td>@point.ShapeDistTraveled</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
