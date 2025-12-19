@@ -15,12 +15,14 @@ namespace TransitFeeds.Controllers
     {
         private readonly GtfsImporter _importer;
         private readonly GtfsExporterService _exporter;
+        private readonly GtfsComplianceService _compliance;
         private readonly ApplicationDbContext _context;
 
-        public ImportController(GtfsImporter importer, GtfsExporterService exporter, ApplicationDbContext context)
+        public ImportController(GtfsImporter importer, GtfsExporterService exporter, GtfsComplianceService compliance, ApplicationDbContext context)
         {
             _importer = importer;
             _exporter = exporter;
+            _compliance = compliance;
             _context = context;
         }
 
@@ -123,6 +125,34 @@ namespace TransitFeeds.Controllers
         {
             var zipBytes = await _exporter.ExportGtfsToZipAsync();
             return File(zipBytes, "application/zip", "gtfs_export.zip");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Audit()
+        {
+            var reports = new List<string>();
+            
+            // 1. Check Routes for missing names
+            var routes = await _context.TransitRoutes.ToListAsync();
+            foreach(var r in routes)
+            {
+                var errors = _compliance.ValidateRoute(r);
+                if (errors.Any()) reports.AddRange(errors.Select(e => $"Route {r.GtfsRouteId}: {e}"));
+            }
+
+            // 2. Check for missing Feed Info
+            if (!await _context.FeedInfos.AnyAsync()) reports.Add("Warning: feed_info.txt is missing from dataset.");
+
+            // 3. Count Entities
+            reports.Add($"Agencies: {await _context.Agencies.CountAsync()}");
+            reports.Add($"Routes: {await _context.TransitRoutes.CountAsync()}");
+            reports.Add($"Stops: {await _context.Stops.CountAsync()}");
+            reports.Add($"Trips: {await _context.Trips.CountAsync()}");
+            reports.Add($"Calendar Rules: {await _context.TransitCalendars.CountAsync()}");
+            reports.Add($"Calendar Exceptions: {await _context.CalendarDates.CountAsync()}");
+            
+            ViewBag.Reports = reports;
+            return View();
         }
     }
 }

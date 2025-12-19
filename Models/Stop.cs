@@ -26,10 +26,20 @@ namespace TransitFeeds.Models
         [Column("stop_desc")]
         public string? StopDesc { get; set; }
 
+        [Column("tts_stop_name")]
+        [Display(Name = "TTS Stop Name")]
+        public string? TtsStopName { get; set; }
+
+        [Column("platform_code")]
+        [Display(Name = "Platform Code")]
+        public string? PlatformCode { get; set; }
+
         [Column("stop_lat")]
+        [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
         public decimal StopLat { get; set; }
 
         [Column("stop_lon")]
+        [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180")]
         public decimal StopLon { get; set; }
 
         [Column("zone_id")]
@@ -40,11 +50,11 @@ namespace TransitFeeds.Models
 
         [Column("location_type")]
         [Display(Name = "Location Type")]
-        public byte? LocationType { get; set; }
+        public LocationType? LocationType { get; set; }
 
         [Column("wheelchair_boarding")]
         [Display(Name = "Wheelchair Boarding")]
-        public byte? WheelchairBoarding { get; set; }
+        public WheelchairBoarding? WheelchairBoarding { get; set; }
 
         [Column("parent_station_id")]
         public int? ParentStationId { get; set; }

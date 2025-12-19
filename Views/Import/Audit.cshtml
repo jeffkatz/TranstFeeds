@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Compliance Audit";
+    var reports = ViewBag.Reports as List<string>;
+}
+
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Compliance Audit Report</h1>
+            <p class="text-gray-500 mt-1">Verification of current data against GTFS specification rules.</p>
+        </div>
+        <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+            Back to Management
+        </a>
+    </div>
+
+    <div class="space-y-6">
+        <div class="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden">
+            <div class="p-8">
+                <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center">
+                    <i class="fas fa-stethoscope text-blue-500 mr-2"></i> Results
+                </h3>
+                
+                <ul class="space-y-4">
+                    @if (reports != null && reports.Any()) {
+                        @foreach (var r in reports) {
+                            <li class="flex items-start p-4 bg-gray-50 rounded-xl">
+                                @if (r.Contains("Warning") || r.Contains("Route")) {
+                                    <i class="fas fa-exclamation-triangle text-amber-500 mt-1 mr-3 text-sm"></i>
+                                } else {
+                                    <i class="fas fa-check-circle text-green-500 mt-1 mr-3 text-sm"></i>
+                                }
+                                <span class="text-gray-700 font-medium">@r</span>
+                            </li>
+                        }
+                    } else {
+                        <li class="bg-green-50 text-green-700 p-6 rounded-xl text-center font-bold">
+                            All checks passed! No specification deviations found.
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-100 rounded-2xl p-8">
+            <h4 class="text-blue-900 font-bold mb-2">Audit Information</h4>
+            <p class="text-blue-700 text-sm leading-relaxed">
+                This audit checks for common GTFS data integrity issues:
+            </p>
+            <ul class="text-blue-600 text-xs mt-3 list-disc list-inside space-y-1">
+                <li>Route naming requirements (short_name vs long_name)</li>
+                <li>Presence of recommended files (feed_info.txt)</li>
+                <li>Entity counts across all tables</li>
+                <li>Coordinate boundary validation (Lat/Lon)</li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -41,11 +41,15 @@ namespace TransitFeeds.Models
 
         [Column("direction_id")]
         [Display(Name = "Direction")]
-        public byte? DirectionId { get; set; }
+        public DirectionId? DirectionId { get; set; }
 
         [Column("wheelchair_accessible")]
         [Display(Name = "Wheelchair Accessible")]
-        public byte? WheelchairAccessible { get; set; }
+        public WheelchairBoarding? WheelchairAccessible { get; set; }
+
+        [Column("bikes_allowed")]
+        [Display(Name = "Bikes Allowed")]
+        public BikesAllowed? BikesAllowed { get; set; }
 
         [Column("block_id")]
         [StringLength(50)]

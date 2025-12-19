@@ -15,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register Services
 builder.Services.AddScoped<TransitFeeds.Services.GtfsImporter>();
 builder.Services.AddScoped<TransitFeeds.Services.GtfsExporterService>();
+builder.Services.AddScoped<TransitFeeds.Services.GtfsComplianceService>();
 
 var app = builder.Build();
 

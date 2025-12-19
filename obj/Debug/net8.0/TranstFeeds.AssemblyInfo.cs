@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TranstFeeds")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+de51ad6ecb5e3cb48cebc4835055d3dc64b00bda")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4eab50a949857cbd63f6eabcda0ba07d7f9154ce")]
 [assembly: System.Reflection.AssemblyProductAttribute("TranstFeeds")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TranstFeeds")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

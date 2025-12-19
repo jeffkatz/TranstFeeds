@@ -48,8 +48,8 @@
                 <div>
                      <dt class="text-sm font-medium text-gray-500 mb-1">Type</dt>
                     <dd class="text-base text-gray-900 bg-gray-50 px-3 py-2 rounded-lg">
-                        @if(Model.RouteType.HasValue && Model.RouteType.Value == 3) { <span><i class="fas fa-bus mr-2 text-gray-400"></i>Bus</span> }
-                        else if(Model.RouteType.HasValue && Model.RouteType.Value == 1) { <span><i class="fas fa-subway mr-2 text-gray-400"></i>Subway</span> }
+                        @if(Model.RouteType == RouteType.Bus) { <span><i class="fas fa-bus mr-2 text-gray-400"></i>Bus</span> }
+                        else if(Model.RouteType == RouteType.Subway) { <span><i class="fas fa-subway mr-2 text-gray-400"></i>Subway</span> }
                         else { <span>@Model.RouteType</span> }
                     </dd>
                 </div>

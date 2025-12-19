@@ -20,6 +20,10 @@ namespace TransitFeeds.Data
         public DbSet<TransitRoute> TransitRoutes { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<StopTime> StopTimes { get; set; }
+        public DbSet<CalendarDate> CalendarDates { get; set; }
+        public DbSet<Frequency> Frequencies { get; set; }
+        public DbSet<Transfer> Transfers { get; set; }
+        public DbSet<FeedInfo> FeedInfos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,8 +33,8 @@ namespace TransitFeeds.Data
             // TimeSpan converter for StopTimes
             // =========================
             var timeConverter = new ValueConverter<TimeSpan?, string>(
-                v => v.HasValue ? v.Value.ToString(@"hh\:mm\:ss") : null!,
-                v => string.IsNullOrEmpty(v) ? (TimeSpan?)null : TimeSpan.Parse(v)
+                v => v.HasValue ? $"{(int)v.Value.TotalHours:D2}:{v.Value.Minutes:D2}:{v.Value.Seconds:D2}" : null!,
+                v => ParseGtfsTime(v)
             );
 
             // =========================
@@ -42,12 +46,12 @@ namespace TransitFeeds.Data
 
                 eb.Property(st => st.ArrivalTime)
                   .HasColumnName("arrival_time")
-                  .HasColumnType("varchar(8)")
+                  .HasColumnType("varchar(10)")
                   .HasConversion(timeConverter);
 
                 eb.Property(st => st.DepartureTime)
                   .HasColumnName("departure_time")
-                  .HasColumnType("varchar(8)")
+                  .HasColumnType("varchar(10)")
                   .HasConversion(timeConverter);
 
                 eb.HasOne(st => st.Trip)
@@ -153,6 +157,73 @@ namespace TransitFeeds.Data
             // =========================
             modelBuilder.Entity<Trip>()
                 .HasKey(t => t.Id);
+            // =
+            // =========================
+            // CalendarDates
+            // =========================
+            modelBuilder.Entity<CalendarDate>(eb =>
+            {
+                eb.HasKey(cd => cd.Id);
+                eb.HasOne(cd => cd.TransitCalendar)
+                  .WithMany()
+                  .HasForeignKey(cd => cd.TransitCalendarId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // =========================
+            // Frequencies
+            // =========================
+            modelBuilder.Entity<Frequency>(eb =>
+            {
+                eb.HasKey(f => f.Id);
+                eb.Property(f => f.StartTime)
+                  .HasColumnName("start_time")
+                  .HasColumnType("varchar(10)")
+                  .HasConversion(timeConverter);
+                eb.Property(f => f.EndTime)
+                  .HasColumnName("end_time")
+                  .HasColumnType("varchar(10)")
+                  .HasConversion(timeConverter);
+                eb.HasOne(f => f.Trip)
+                  .WithMany()
+                  .HasForeignKey(f => f.TripId);
+            });
+
+            // =========================
+            // Transfers
+            // =========================
+            modelBuilder.Entity<Transfer>(eb =>
+            {
+                eb.HasKey(t => t.Id);
+                eb.HasOne(t => t.FromStop)
+                  .WithMany()
+                  .HasForeignKey(t => t.FromStopId)
+                  .OnDelete(DeleteBehavior.Restrict);
+                eb.HasOne(t => t.ToStop)
+                  .WithMany()
+                  .HasForeignKey(t => t.ToStopId)
+                  .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // =========================
+            // FeedInfo
+            // =========================
+            modelBuilder.Entity<FeedInfo>()
+                .HasKey(f => f.Id);
+        }
+
+        private static TimeSpan? ParseGtfsTime(string? v)
+        {
+            if (string.IsNullOrEmpty(v)) return null;
+            var parts = v.Split(':');
+            if (parts.Length < 2) return null;
+
+            if (int.TryParse(parts[0], out int h) && int.TryParse(parts[1], out int m))
+            {
+                int s = parts.Length > 2 && int.TryParse(parts[2], out int sec) ? sec : 0;
+                return new TimeSpan(h, m, s);
+            }
+            return null;
         }
     }
 }

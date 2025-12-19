@@ -3,6 +3,10 @@ C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\appsettings.json
 C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.staticwebassets.runtime.json
 C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.staticwebassets.endpoints.json
 C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.exe
+C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.deps.json
+C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.runtimeconfig.json
+C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.dll
+C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.pdb
 C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\Azure.Core.dll
 C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\Azure.Identity.dll
 C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\CsvHelper.dll
@@ -164,9 +168,5 @@ C:\Users\User\Documents\SandBox\TranstFeeds\obj\Debug\net8.0\TranstFe.92CC0BCB.U
 C:\Users\User\Documents\SandBox\TranstFeeds\obj\Debug\net8.0\TranstFeeds.dll
 C:\Users\User\Documents\SandBox\TranstFeeds\obj\Debug\net8.0\refint\TranstFeeds.dll
 C:\Users\User\Documents\SandBox\TranstFeeds\obj\Debug\net8.0\TranstFeeds.pdb
-C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.deps.json
-C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.runtimeconfig.json
-C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.dll
-C:\Users\User\Documents\SandBox\TranstFeeds\bin\Debug\net8.0\TranstFeeds.pdb
 C:\Users\User\Documents\SandBox\TranstFeeds\obj\Debug\net8.0\TranstFeeds.genruntimeconfig.cache
 C:\Users\User\Documents\SandBox\TranstFeeds\obj\Debug\net8.0\ref\TranstFeeds.dll

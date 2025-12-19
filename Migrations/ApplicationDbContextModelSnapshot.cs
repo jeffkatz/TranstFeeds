@@ -65,7 +65,134 @@ namespace TranstFeeds.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Agencies", (string)null);
+                    b.ToTable("Agencies");
+                });
+
+            modelBuilder.Entity("TransitFeeds.Models.CalendarDate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("date")
+                        .HasColumnName("date");
+
+                    b.Property<int>("ExceptionType")
+                        .HasColumnType("int")
+                        .HasColumnName("exception_type");
+
+                    b.Property<string>("GtfsServiceId")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("gtfs_service_id");
+
+                    b.Property<int?>("TransitCalendarId")
+                        .HasColumnType("int")
+                        .HasColumnName("transit_calendar_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransitCalendarId");
+
+                    b.ToTable("CalendarDates");
+                });
+
+            modelBuilder.Entity("TransitFeeds.Models.FeedInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("FeedContactEmail")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("feed_contact_email");
+
+                    b.Property<string>("FeedContactUrl")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("feed_contact_url");
+
+                    b.Property<DateTime?>("FeedEndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("feed_end_date");
+
+                    b.Property<string>("FeedLang")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("feed_lang");
+
+                    b.Property<string>("FeedPublisherName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("feed_publisher_name");
+
+                    b.Property<string>("FeedPublisherUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("feed_publisher_url");
+
+                    b.Property<DateTime?>("FeedStartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("feed_start_date");
+
+                    b.Property<string>("FeedVersion")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)")
+                        .HasColumnName("feed_version");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FeedInfo");
+                });
+
+            modelBuilder.Entity("TransitFeeds.Models.Frequency", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("EndTime")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("end_time");
+
+                    b.Property<byte?>("ExactTimes")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("exact_times");
+
+                    b.Property<int>("HeadwaySecs")
+                        .HasColumnType("int")
+                        .HasColumnName("headway_secs");
+
+                    b.Property<string>("StartTime")
+                        .IsRequired()
+                        .HasColumnType("varchar(10)")
+                        .HasColumnName("start_time");
+
+                    b.Property<int>("TripId")
+                        .HasColumnType("int")
+                        .HasColumnName("trip_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TripId");
+
+                    b.ToTable("Frequencies");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.Shape", b =>
@@ -101,7 +228,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("ShapeId");
 
-                    b.ToTable("Shapes", (string)null);
+                    b.ToTable("Shapes");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.ShapesMaster", b =>
@@ -121,7 +248,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ShapesMaster", (string)null);
+                    b.ToTable("ShapesMaster");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.Stop", b =>
@@ -139,13 +266,17 @@ namespace TranstFeeds.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("gtfs_stop_id");
 
-                    b.Property<byte?>("LocationType")
-                        .HasColumnType("tinyint")
+                    b.Property<int?>("LocationType")
+                        .HasColumnType("int")
                         .HasColumnName("location_type");
 
                     b.Property<int?>("ParentStationId")
                         .HasColumnType("int")
                         .HasColumnName("parent_station_id");
+
+                    b.Property<string>("PlatformCode")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("platform_code");
 
                     b.Property<string>("StopCode")
                         .HasColumnType("nvarchar(max)")
@@ -176,8 +307,12 @@ namespace TranstFeeds.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("stop_url");
 
-                    b.Property<byte?>("WheelchairBoarding")
-                        .HasColumnType("tinyint")
+                    b.Property<string>("TtsStopName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("tts_stop_name");
+
+                    b.Property<int?>("WheelchairBoarding")
+                        .HasColumnType("int")
                         .HasColumnName("wheelchair_boarding");
 
                     b.Property<string>("ZoneId")
@@ -188,7 +323,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("ParentStationId");
 
-                    b.ToTable("Stops", (string)null);
+                    b.ToTable("Stops");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.StopTime", b =>
@@ -201,19 +336,27 @@ namespace TranstFeeds.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ArrivalTime")
-                        .HasColumnType("varchar(8)")
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("arrival_time");
 
+                    b.Property<int?>("ContinuousDropOff")
+                        .HasColumnType("int")
+                        .HasColumnName("continuous_drop_off");
+
+                    b.Property<int?>("ContinuousPickup")
+                        .HasColumnType("int")
+                        .HasColumnName("continuous_pickup");
+
                     b.Property<string>("DepartureTime")
-                        .HasColumnType("varchar(8)")
+                        .HasColumnType("varchar(10)")
                         .HasColumnName("departure_time");
 
-                    b.Property<byte?>("DropOffType")
-                        .HasColumnType("tinyint")
+                    b.Property<int?>("DropOffType")
+                        .HasColumnType("int")
                         .HasColumnName("drop_off_type");
 
-                    b.Property<byte?>("PickupType")
-                        .HasColumnType("tinyint")
+                    b.Property<int?>("PickupType")
+                        .HasColumnType("int")
                         .HasColumnName("pickup_type");
 
                     b.Property<double?>("ShapeDistTraveled")
@@ -233,6 +376,10 @@ namespace TranstFeeds.Migrations
                         .HasColumnType("int")
                         .HasColumnName("stop_sequence");
 
+                    b.Property<int?>("Timepoint")
+                        .HasColumnType("int")
+                        .HasColumnName("timepoint");
+
                     b.Property<int>("TripId")
                         .HasColumnType("int")
                         .HasColumnName("trip_id");
@@ -243,7 +390,41 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("StopTimes", (string)null);
+                    b.ToTable("StopTimes");
+                });
+
+            modelBuilder.Entity("TransitFeeds.Models.Transfer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("FromStopId")
+                        .HasColumnType("int")
+                        .HasColumnName("from_stop_id");
+
+                    b.Property<int?>("MinTransferTime")
+                        .HasColumnType("int")
+                        .HasColumnName("min_transfer_time");
+
+                    b.Property<int>("ToStopId")
+                        .HasColumnType("int")
+                        .HasColumnName("to_stop_id");
+
+                    b.Property<byte>("TransferType")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("transfer_type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromStopId");
+
+                    b.HasIndex("ToStopId");
+
+                    b.ToTable("Transfers");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.TransitCalendar", b =>
@@ -299,7 +480,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransitCalendar", (string)null);
+                    b.ToTable("TransitCalendar");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.TransitRoute", b =>
@@ -315,6 +496,14 @@ namespace TranstFeeds.Migrations
                         .HasColumnType("int")
                         .HasColumnName("agency_id");
 
+                    b.Property<int?>("ContinuousDropOff")
+                        .HasColumnType("int")
+                        .HasColumnName("continuous_drop_off");
+
+                    b.Property<int?>("ContinuousPickup")
+                        .HasColumnType("int")
+                        .HasColumnName("continuous_pickup");
+
                     b.Property<string>("GtfsRouteId")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -322,8 +511,8 @@ namespace TranstFeeds.Migrations
                         .HasColumnName("gtfs_route_id");
 
                     b.Property<string>("RouteColor")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)")
                         .HasColumnName("route_color");
 
                     b.Property<string>("RouteDesc")
@@ -341,12 +530,16 @@ namespace TranstFeeds.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("route_short_name");
 
+                    b.Property<int?>("RouteSortOrder")
+                        .HasColumnType("int")
+                        .HasColumnName("route_sort_order");
+
                     b.Property<string>("RouteTextColor")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)")
                         .HasColumnName("route_text_color");
 
-                    b.Property<int?>("RouteType")
+                    b.Property<int>("RouteType")
                         .HasColumnType("int")
                         .HasColumnName("route_type");
 
@@ -359,7 +552,7 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("AgencyId");
 
-                    b.ToTable("TransitRoutes", (string)null);
+                    b.ToTable("TransitRoutes");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.Trip", b =>
@@ -371,13 +564,17 @@ namespace TranstFeeds.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("BikesAllowed")
+                        .HasColumnType("int")
+                        .HasColumnName("bikes_allowed");
+
                     b.Property<string>("BlockId")
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("block_id");
 
-                    b.Property<byte?>("DirectionId")
-                        .HasColumnType("tinyint")
+                    b.Property<int?>("DirectionId")
+                        .HasColumnType("int")
                         .HasColumnName("direction_id");
 
                     b.Property<string>("GtfsTripId")
@@ -408,8 +605,8 @@ namespace TranstFeeds.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasColumnName("trip_short_name");
 
-                    b.Property<byte?>("WheelchairAccessible")
-                        .HasColumnType("tinyint")
+                    b.Property<int?>("WheelchairAccessible")
+                        .HasColumnType("int")
                         .HasColumnName("wheelchair_accessible");
 
                     b.HasKey("Id");
@@ -420,7 +617,28 @@ namespace TranstFeeds.Migrations
 
                     b.HasIndex("TransitRouteId");
 
-                    b.ToTable("Trips", (string)null);
+                    b.ToTable("Trips");
+                });
+
+            modelBuilder.Entity("TransitFeeds.Models.CalendarDate", b =>
+                {
+                    b.HasOne("TransitFeeds.Models.TransitCalendar", "TransitCalendar")
+                        .WithMany()
+                        .HasForeignKey("TransitCalendarId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("TransitCalendar");
+                });
+
+            modelBuilder.Entity("TransitFeeds.Models.Frequency", b =>
+                {
+                    b.HasOne("TransitFeeds.Models.Trip", "Trip")
+                        .WithMany()
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.Shape", b =>
@@ -461,6 +679,25 @@ namespace TranstFeeds.Migrations
                     b.Navigation("Stop");
 
                     b.Navigation("Trip");
+                });
+
+            modelBuilder.Entity("TransitFeeds.Models.Transfer", b =>
+                {
+                    b.HasOne("TransitFeeds.Models.Stop", "FromStop")
+                        .WithMany()
+                        .HasForeignKey("FromStopId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("TransitFeeds.Models.Stop", "ToStop")
+                        .WithMany()
+                        .HasForeignKey("ToStopId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("FromStop");
+
+                    b.Navigation("ToStop");
                 });
 
             modelBuilder.Entity("TransitFeeds.Models.TransitRoute", b =>

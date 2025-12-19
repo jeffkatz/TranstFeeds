@@ -39,15 +39,27 @@ namespace TransitFeeds.Models
 
         [Column("pickup_type")]
         [Display(Name = "Pickup Type")]
-        public byte? PickupType { get; set; }
+        public PickupDropOffType? PickupType { get; set; }
 
         [Column("drop_off_type")]
         [Display(Name = "Drop Off Type")]
-        public byte? DropOffType { get; set; }
+        public PickupDropOffType? DropOffType { get; set; }
 
         [Column("shape_dist_traveled")]
         [Display(Name = "Shape Distance Traveled")]
         public double? ShapeDistTraveled { get; set; }
+
+        [Column("timepoint")]
+        [Display(Name = "Timepoint")]
+        public TimepointType? Timepoint { get; set; }
+
+        [Column("continuous_pickup")]
+        [Display(Name = "Continuous Pickup")]
+        public ContinuousStopping? ContinuousPickup { get; set; }
+
+        [Column("continuous_drop_off")]
+        [Display(Name = "Continuous Drop-off")]
+        public ContinuousStopping? ContinuousDropOff { get; set; }
 
         // Navigation properties
         [ForeignKey("TripId")]

@@ -1,0 +1,136 @@
+@model TransitFeeds.Models.TransitRoute
+
+@{
+    ViewData["Title"] = "Edit Route";
+}
+
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Edit Route</h1>
+            <p class="text-gray-500 mt-1">Update details for route @Model.RouteShortName</p>
+        </div>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+            Back to Details
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden">
+        <form asp-action="Edit" class="p-8">
+            <div asp-validation-summary="ModelOnly" class="mb-6 p-4 bg-red-50 text-red-700 rounded-xl text-sm border border-red-100"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <!-- Agency Selection -->
+                <div class="space-y-2">
+                    <label asp-for="AgencyId" class="block text-sm font-semibold text-gray-700">Agency</label>
+                    <select asp-for="AgencyId" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" asp-items="ViewBag.AgencyId"></select>
+                    <span asp-validation-for="AgencyId" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- GTFS Route ID -->
+                <div class="space-y-2">
+                    <label asp-for="GtfsRouteId" class="block text-sm font-semibold text-gray-700">GTFS Route ID</label>
+                    <input asp-for="GtfsRouteId" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" />
+                    <span asp-validation-for="GtfsRouteId" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- Short Name -->
+                <div class="space-y-2">
+                    <label asp-for="RouteShortName" class="block text-sm font-semibold text-gray-700">Short Name</label>
+                    <input asp-for="RouteShortName" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" />
+                    <span asp-validation-for="RouteShortName" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- Long Name -->
+                <div class="space-y-2">
+                    <label asp-for="RouteLongName" class="block text-sm font-semibold text-gray-700">Long Name</label>
+                    <input asp-for="RouteLongName" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" />
+                    <span asp-validation-for="RouteLongName" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- Route Type -->
+                <div class="space-y-2">
+                    <label asp-for="RouteType" class="block text-sm font-semibold text-gray-700">Route Type</label>
+                    <select asp-for="RouteType" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" asp-items="Html.GetEnumSelectList<RouteType>()"></select>
+                    <span asp-validation-for="RouteType" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- Route URL -->
+                <div class="space-y-2">
+                    <label asp-for="RouteUrl" class="block text-sm font-semibold text-gray-700">Route URL</label>
+                    <input asp-for="RouteUrl" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" />
+                    <span asp-validation-for="RouteUrl" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- Colors -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label asp-for="RouteColor" class="block text-sm font-semibold text-gray-700">Route Color</label>
+                        <div class="flex gap-2">
+                            <input type="color" id="colorPicker" class="w-10 h-10 p-1 bg-white border border-gray-200 rounded-lg cursor-pointer" oninput="document.getElementById('RouteColor').value = this.value.substring(1).toUpperCase()" />
+                            <input asp-for="RouteColor" class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm uppercase" maxlength="6" />
+                        </div>
+                        <span asp-validation-for="RouteColor" class="text-xs text-red-500"></span>
+                    </div>
+                    <div class="space-y-2">
+                        <label asp-for="RouteTextColor" class="block text-sm font-semibold text-gray-700">Text Color</label>
+                        <div class="flex gap-2">
+                            <input type="color" id="textPicker" class="w-10 h-10 p-1 bg-white border border-gray-200 rounded-lg cursor-pointer" oninput="document.getElementById('RouteTextColor').value = this.value.substring(1).toUpperCase()" />
+                            <input asp-for="RouteTextColor" class="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm uppercase" maxlength="6" />
+                        </div>
+                        <span asp-validation-for="RouteTextColor" class="text-xs text-red-500"></span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="md:col-span-2 space-y-2">
+                    <label asp-for="RouteDesc" class="block text-sm font-semibold text-gray-700">Description</label>
+                    <textarea asp-for="RouteDesc" rows="3" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none resize-none" placeholder="Service details..."></textarea>
+                    <span asp-validation-for="RouteDesc" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- Continuous Pickup/Drop-off -->
+                <div class="space-y-2">
+                    <label asp-for="ContinuousPickup" class="block text-sm font-semibold text-gray-700">Continuous Pickup</label>
+                    <select asp-for="ContinuousPickup" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none" asp-items="Html.GetEnumSelectList<ContinuousStopping>()">
+                        <option value="">-- Inheritance --</option>
+                    </select>
+                    <span asp-validation-for="ContinuousPickup" class="text-xs text-red-500"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="ContinuousDropOff" class="block text-sm font-semibold text-gray-700">Continuous Drop-off</label>
+                    <select asp-for="ContinuousDropOff" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none" asp-items="Html.GetEnumSelectList<ContinuousStopping>()">
+                        <option value="">-- Inheritance --</option>
+                    </select>
+                    <span asp-validation-for="ContinuousDropOff" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- Sort Order -->
+                <div class="space-y-2">
+                    <label asp-for="RouteSortOrder" class="block text-sm font-semibold text-gray-700">Sort Order</label>
+                    <input asp-for="RouteSortOrder" type="number" min="0" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 transition-all outline-none" placeholder="e.g. 1" />
+                    <span asp-validation-for="RouteSortOrder" class="text-xs text-red-500"></span>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-gray-100 flex justify-end gap-3">
+                <a asp-action="Index" class="px-6 py-2.5 border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition-all">Discard Changes</a>
+                <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-medium shadow-sm hover:bg-blue-700 transition-all">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+             const rc = document.getElementById('RouteColor');
+             if(rc.value) document.getElementById('colorPicker').value = '#' + rc.value;
+             const tc = document.getElementById('RouteTextColor');
+             if(tc.value) document.getElementById('textPicker').value = '#' + tc.value;
+        });
+    </script>
+}

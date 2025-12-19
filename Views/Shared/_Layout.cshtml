@@ -222,6 +222,18 @@
                                 <p>Shapes</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a asp-controller="CalendarDates" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "CalendarDates" ? "active" : "")">
+                                <i class="nav-icon fas fa-calendar-times"></i>
+                                <p>Calendar Exceptions</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="FeedInfos" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "FeedInfos" ? "active" : "")">
+                                <i class="nav-icon fas fa-info-circle"></i>
+                                <p>Feed Info</p>
+                            </a>
+                        </li>
 
                         <li class="nav-header text-xs font-semibold text-gray-400 uppercase tracking-widest mt-6 mb-2 pl-2">System</li>
                         <li class="nav-item">

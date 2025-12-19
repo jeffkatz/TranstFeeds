@@ -34,6 +34,10 @@ namespace TransitFeeds.Services
                 await ExportRoutes(archive);
                 await ExportTrips(archive);
                 await ExportStopTimes(archive);
+                await ExportFrequencies(archive);
+                await ExportTransfers(archive);
+                await ExportCalendarDates(archive);
+                await ExportFeedInfo(archive);
             }
             return memoryStream.ToArray();
         }
@@ -109,10 +113,12 @@ namespace TransitFeeds.Services
                 stop_lon = s.StopLon,
                 zone_id = s.ZoneId,
                 stop_url = s.StopUrl,
-                location_type = s.LocationType,
+                location_type = (int?)s.LocationType,
                 parent_station = s.ParentStationId.HasValue && stopIdMap.ContainsKey(s.ParentStationId.Value) ? stopIdMap[s.ParentStationId.Value] : null,
                 stop_timezone = s.StopTimezone,
-                wheelchair_boarding = s.WheelchairBoarding
+                wheelchair_boarding = (int?)s.WheelchairBoarding,
+                tts_stop_name = s.TtsStopName,
+                platform_code = s.PlatformCode
             });
         }
 
@@ -126,10 +132,13 @@ namespace TransitFeeds.Services
                 route_short_name = r.RouteShortName,
                 route_long_name = r.RouteLongName,
                 route_desc = r.RouteDesc,
-                route_type = r.RouteType,
+                route_type = (int)r.RouteType,
                 route_url = r.RouteUrl,
                 route_color = r.RouteColor,
-                route_text_color = r.RouteTextColor
+                route_text_color = r.RouteTextColor,
+                continuous_pickup = (int?)r.ContinuousPickup,
+                continuous_drop_off = (int?)r.ContinuousDropOff,
+                route_sort_order = r.RouteSortOrder
             });
         }
 
@@ -149,10 +158,11 @@ namespace TransitFeeds.Services
                 trip_id = t.GtfsTripId,
                 trip_headsign = t.TripHeadsign,
                 trip_short_name = t.TripShortName,
-                direction_id = t.DirectionId,
+                direction_id = (int?)t.DirectionId,
                 block_id = t.BlockId,
                 shape_id = t.ShapesMaster?.GtfsShapeId,
-                wheelchair_accessible = t.WheelchairAccessible
+                wheelchair_accessible = (int?)t.WheelchairAccessible,
+                bikes_allowed = (int?)t.BikesAllowed
             });
         }
 
@@ -185,7 +195,10 @@ namespace TransitFeeds.Services
                             stop_headsign = st.StopHeadsign,
                             pickup_type = st.PickupType,
                             drop_off_type = st.DropOffType,
-                            shape_dist_traveled = st.ShapeDistTraveled
+                            shape_dist_traveled = st.ShapeDistTraveled,
+                            timepoint = st.Timepoint,
+                            continuous_pickup = st.ContinuousPickup,
+                            continuous_drop_off = st.ContinuousDropOff
                         };
 
             // Using WriteRecords directly on the enumerable query.
@@ -202,9 +215,66 @@ namespace TransitFeeds.Services
                 st.stop_id,
                 st.stop_sequence,
                 st.stop_headsign,
-                st.pickup_type,
-                st.drop_off_type,
-                st.shape_dist_traveled
+                pickup_type = (int?)st.pickup_type,
+                drop_off_type = (int?)st.drop_off_type,
+                st.shape_dist_traveled,
+                timepoint = (int?)st.timepoint,
+                continuous_pickup = (int?)st.continuous_pickup,
+                continuous_drop_off = (int?)st.continuous_drop_off
+            });
+        }
+
+        private async Task ExportFrequencies(ZipArchive archive)
+        {
+            var frequencies = await _context.Frequencies.Include(f => f.Trip).AsNoTracking().ToListAsync();
+            await WriteCsvEntry(archive, "frequencies.txt", frequencies, f => new
+            {
+                trip_id = f.Trip?.GtfsTripId,
+                start_time = FormatTime(f.StartTime),
+                end_time = FormatTime(f.EndTime),
+                headway_secs = f.HeadwaySecs,
+                exact_times = f.ExactTimes
+            });
+        }
+
+        private async Task ExportTransfers(ZipArchive archive)
+        {
+            var transfers = await _context.Transfers.Include(t => t.FromStop).Include(t => t.ToStop).AsNoTracking().ToListAsync();
+            await WriteCsvEntry(archive, "transfers.txt", transfers, t => new
+            {
+                from_stop_id = t.FromStop?.GtfsStopId,
+                to_stop_id = t.ToStop?.GtfsStopId,
+                transfer_type = t.TransferType,
+                min_transfer_time = t.MinTransferTime
+            });
+        }
+
+        private async Task ExportCalendarDates(ZipArchive archive)
+        {
+            var dates = await _context.CalendarDates.AsNoTracking().ToListAsync();
+            await WriteCsvEntry(archive, "calendar_dates.txt", dates, d => new
+            {
+                service_id = d.GtfsServiceId,
+                date = d.Date.ToString("yyyyMMdd"),
+                exception_type = (int)d.ExceptionType
+            });
+        }
+
+        private async Task ExportFeedInfo(ZipArchive archive)
+        {
+            var info = await _context.FeedInfos.AsNoTracking().ToListAsync();
+            if (!info.Any()) return;
+
+            await WriteCsvEntry(archive, "feed_info.txt", info, f => new
+            {
+                feed_publisher_name = f.FeedPublisherName,
+                feed_publisher_url = f.FeedPublisherUrl,
+                feed_lang = f.FeedLang,
+                feed_start_date = f.FeedStartDate?.ToString("yyyyMMdd"),
+                feed_end_date = f.FeedEndDate?.ToString("yyyyMMdd"),
+                feed_version = f.FeedVersion,
+                feed_contact_email = f.FeedContactEmail,
+                feed_contact_url = f.FeedContactUrl
             });
         }
 

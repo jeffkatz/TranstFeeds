@@ -77,14 +77,14 @@
                     <dd class="space-y-3">
                         <div class="flex justify-between">
                             <span class="text-sm text-gray-600">Wheelchair Access</span>
-                            <span class="text-sm font-medium @(Model.WheelchairBoarding == (byte)1 ? "text-green-600" : "text-gray-900")">
-                                @(Model.WheelchairBoarding == (byte)1 ? "Accessible" : (Model.WheelchairBoarding == (byte)2 ? "Not Accessible" : "Unknown"))
+                            <span class="text-sm font-medium @(Model.WheelchairBoarding == WheelchairBoarding.Possible ? "text-green-600" : "text-gray-900")">
+                                @(Model.WheelchairBoarding == WheelchairBoarding.Possible ? "Accessible" : (Model.WheelchairBoarding == WheelchairBoarding.NotPossible ? "Not Accessible" : "Unknown"))
                             </span>
                         </div>
                         <div class="flex justify-between">
                              <span class="text-sm text-gray-600">Type</span>
                             <span class="text-sm font-medium text-gray-900">
-                                @(Model.LocationType == (byte)1 ? "Station" : "Stop")
+                                @(Model.LocationType == LocationType.Station ? "Station" : "Stop")
                             </span>
                         </div>
                          <div class="flex justify-between">

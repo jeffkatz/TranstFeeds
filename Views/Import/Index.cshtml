@@ -77,9 +77,12 @@
                 <br/><span class="text-xs text-gray-400">Includes all updated routes, stops, and schedules.</span>
             </p>
 
-            <div class="w-full max-w-sm">
+            <div class="w-full max-w-sm flex flex-col gap-3">
                 <a asp-controller="Import" asp-action="ExportZip" class="flex items-center justify-center w-full py-3 px-6 rounded-lg bg-emerald-600 text-white font-bold text-sm uppercase tracking-wider hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-all shadow-md">
                     <i class="fas fa-download mr-2"></i> Download GTFS.zip
+                </a>
+                <a asp-controller="Import" asp-action="Audit" class="flex items-center justify-center w-full py-3 px-6 rounded-lg bg-blue-100 text-blue-700 font-bold text-sm uppercase tracking-wider hover:bg-blue-200 transition-all">
+                    <i class="fas fa-microscope mr-2"></i> Run Compliance Audit
                 </a>
             </div>
         </div>

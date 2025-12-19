@@ -6,7 +6,7 @@
     var routeTypes = Model.TransitRoutes.GroupBy(r => r.RouteType)
         .Select(g => new { Type = g.Key, Count = g.Count() }).ToList();
     
-    var labels = System.Text.Json.JsonSerializer.Serialize(routeTypes.Select(x => x.Type == 3 ? "Bus" : x.Type == 1 ? "Subway" : "Other"));
+    var labels = System.Text.Json.JsonSerializer.Serialize(routeTypes.Select(x => x.Type == RouteType.Bus ? "Bus" : x.Type == RouteType.Subway ? "Subway" : "Other"));
     var data = System.Text.Json.JsonSerializer.Serialize(routeTypes.Select(x => x.Count));
 }
 

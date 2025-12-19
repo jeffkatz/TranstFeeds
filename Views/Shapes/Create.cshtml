@@ -1,0 +1,68 @@
+@model TransitFeeds.Models.Shape
+
+@{
+    ViewData["Title"] = "Create Shape Point";
+}
+
+<div class="max-w-4xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Add Shape Point</h1>
+            <p class="text-gray-500 mt-1">Add a geographical point to a shape definition.</p>
+        </div>
+        <a asp-action="Index" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium text-gray-700 shadow-sm hover:bg-gray-50 transition-colors">
+            Cancel
+        </a>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-soft border border-gray-100 overflow-hidden">
+        <form asp-action="Create" class="p-8">
+            <div asp-validation-summary="ModelOnly" class="mb-6 p-4 bg-red-50 text-red-700 rounded-xl text-sm border border-red-100"></div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <!-- Master Shape -->
+                <div class="space-y-2">
+                    <label asp-for="ShapeId" class="block text-sm font-semibold text-gray-700">Shape ID (Master)</label>
+                    <select asp-for="ShapeId" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" asp-items="ViewBag.ShapeId">
+                        <option value="">-- Select Shape --</option>
+                    </select>
+                    <span asp-validation-for="ShapeId" class="text-xs text-red-500"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="ShapePtSequence" class="block text-sm font-semibold text-gray-700">Point Sequence</label>
+                    <input asp-for="ShapePtSequence" type="number" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" placeholder="e.g. 1" />
+                    <span asp-validation-for="ShapePtSequence" class="text-xs text-red-500"></span>
+                </div>
+
+                <!-- Coordinates -->
+                <div class="space-y-2">
+                    <label asp-for="ShapePtLat" class="block text-sm font-semibold text-gray-700">Latitude</label>
+                    <input asp-for="ShapePtLat" type="number" step="any" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" placeholder="e.g. 40.7128" />
+                    <span asp-validation-for="ShapePtLat" class="text-xs text-red-500"></span>
+                </div>
+
+                <div class="space-y-2">
+                    <label asp-for="ShapePtLon" class="block text-sm font-semibold text-gray-700">Longitude</label>
+                    <input asp-for="ShapePtLon" type="number" step="any" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" placeholder="e.g. -74.0060" />
+                    <span asp-validation-for="ShapePtLon" class="text-xs text-red-500"></span>
+                </div>
+
+                <div class="md:col-span-2 space-y-2">
+                    <label asp-for="ShapeDistTraveled" class="block text-sm font-semibold text-gray-700">Distance Traveled (Optional)</label>
+                    <input asp-for="ShapeDistTraveled" type="number" step="any" class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none" placeholder="e.g. 0.0" />
+                    <span asp-validation-for="ShapeDistTraveled" class="text-xs text-red-500"></span>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-gray-100 flex justify-end gap-3">
+                <a asp-action="Index" class="px-6 py-2.5 border border-gray-300 rounded-xl font-medium text-gray-700 hover:bg-gray-50 transition-all">Discard</a>
+                <button type="submit" class="px-6 py-2.5 bg-blue-600 text-white rounded-xl font-medium shadow-sm hover:bg-blue-700 transition-all">Add Point</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

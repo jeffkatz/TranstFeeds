@@ -50,25 +50,25 @@ namespace TransitFeeds.Data
             var stops = new Stop[]
             {
                 // Rustenburg CBD
-                new Stop { GtfsStopId = "RTB_CBD", StopName = "Rustenburg Taxi Rank", StopDesc = "Main CBD Interchange", StopLat = -25.6685m, StopLon = 27.2424m, LocationType = 0 },
+                new Stop { GtfsStopId = "RTB_CBD", StopName = "Rustenburg Taxi Rank", StopDesc = "Main CBD Interchange", StopLat = -25.6685m, StopLon = 27.2424m, LocationType = LocationType.Stop },
                 
                 // Tlhabane
-                new Stop { GtfsStopId = "TLK_01", StopName = "Tlhabane Forum", StopDesc = "Shopping Centre Stop", StopLat = -25.6450m, StopLon = 27.2200m, LocationType = 0 },
+                new Stop { GtfsStopId = "TLK_01", StopName = "Tlhabane Forum", StopDesc = "Shopping Centre Stop", StopLat = -25.6450m, StopLon = 27.2200m, LocationType = LocationType.Stop },
 
                 // Phokeng Entrance / Route R104
-                new Stop { GtfsStopId = "PHK_ENT", StopName = "Phokeng Welcome Centre", StopDesc = "R104 Junction", StopLat = -25.6000m, StopLon = 27.2000m, LocationType = 0 },
+                new Stop { GtfsStopId = "PHK_ENT", StopName = "Phokeng Welcome Centre", StopDesc = "R104 Junction", StopLat = -25.6000m, StopLon = 27.2000m, LocationType = LocationType.Stop },
 
                 // Phokeng Central
-                new Stop { GtfsStopId = "PHK_MALL", StopName = "Phokeng Mall", StopDesc = "Central Hub", StopLat = -25.5780m, StopLon = 27.1630m, LocationType = 0 },
+                new Stop { GtfsStopId = "PHK_MALL", StopName = "Phokeng Mall", StopDesc = "Central Hub", StopLat = -25.5780m, StopLon = 27.1630m, LocationType = LocationType.Stop },
 
                 // Stadium
-                new Stop { GtfsStopId = "RBS_STAD", StopName = "Royal Bafokeng Stadium", StopDesc = "Stadium Entrance", StopLat = -25.5760m, StopLon = 27.1600m, LocationType = 0 },
+                new Stop { GtfsStopId = "RBS_STAD", StopName = "Royal Bafokeng Stadium", StopDesc = "Stadium Entrance", StopLat = -25.5760m, StopLon = 27.1600m, LocationType = LocationType.Stop },
 
                 // Luka
-                new Stop { GtfsStopId = "LUK_VIL", StopName = "Luka Village", StopDesc = "Community Hall", StopLat = -25.5390m, StopLon = 27.1450m, LocationType = 0 },
+                new Stop { GtfsStopId = "LUK_VIL", StopName = "Luka Village", StopDesc = "Community Hall", StopLat = -25.5390m, StopLon = 27.1450m, LocationType = LocationType.Stop },
 
                 // Chaneng
-                new Stop { GtfsStopId = "CHN_TERM", StopName = "Chaneng Terminus", StopDesc = "End of Line", StopLat = -25.4850m, StopLon = 27.1250m, LocationType = 0 }
+                new Stop { GtfsStopId = "CHN_TERM", StopName = "Chaneng Terminus", StopDesc = "End of Line", StopLat = -25.4850m, StopLon = 27.1250m, LocationType = LocationType.Stop }
             };
             context.Stops.AddRange(stops);
             context.SaveChanges();
@@ -79,13 +79,13 @@ namespace TransitFeeds.Data
             var routes = new TransitRoute[]
             {
                 // Route 1: Rustenburg to Chaneng (Long distance)
-                new TransitRoute { GtfsRouteId = "RT_101", AgencyId = agencies[0].Id, RouteShortName = "101", RouteLongName = "Rustenburg - Chaneng", RouteDesc = "Via Phokeng & Luka", RouteType = 3, RouteColor = "E11D48", RouteTextColor = "FFFFFF" }, // Red
+                new TransitRoute { GtfsRouteId = "RT_101", AgencyId = agencies[0].Id, RouteShortName = "101", RouteLongName = "Rustenburg - Chaneng", RouteDesc = "Via Phokeng & Luka", RouteType = RouteType.Bus, RouteColor = "E11D48", RouteTextColor = "FFFFFF" }, // Red
                 
                 // Route 2: Phokeng Local Loop (Local)
-                new TransitRoute { GtfsRouteId = "RT_102", AgencyId = agencies[0].Id, RouteShortName = "102", RouteLongName = "Phokeng Local Loop", RouteDesc = "Stadium & Mall Circle", RouteType = 3, RouteColor = "2563EB", RouteTextColor = "FFFFFF" }, // Blue
+                new TransitRoute { GtfsRouteId = "RT_102", AgencyId = agencies[0].Id, RouteShortName = "102", RouteLongName = "Phokeng Local Loop", RouteDesc = "Stadium & Mall Circle", RouteType = RouteType.Bus, RouteColor = "2563EB", RouteTextColor = "FFFFFF" }, // Blue
 
                 // Route 3: RRT Express
-                new TransitRoute { GtfsRouteId = "RRT_EXP", AgencyId = agencies[1].Id, RouteShortName = "X1", RouteLongName = "City Express", RouteDesc = "Direct CBD to Tlhabane", RouteType = 3, RouteColor = "059669", RouteTextColor = "FFFFFF" } // Green
+                new TransitRoute { GtfsRouteId = "RRT_EXP", AgencyId = agencies[1].Id, RouteShortName = "X1", RouteLongName = "City Express", RouteDesc = "Direct CBD to Tlhabane", RouteType = RouteType.Bus, RouteColor = "059669", RouteTextColor = "FFFFFF" } // Green
             };
             context.TransitRoutes.AddRange(routes);
             context.SaveChanges();
